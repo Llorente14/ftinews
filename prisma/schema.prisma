@@ -1,12 +1,102 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
+}
+
+// Enum untuk membedakan user biasa dan penulis/admin
+enum Role {
+  USER
+  WRITER
+  ADMIN
+}
+
+model User {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  namaLengkap    String
+  nomorHandphone String   @unique
+  password       String
+  role           Role     @default(USER) // Defaultnya user biasa
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relasi
+  bookmarks Bookmark[]
+  comments  Comment[]
+  articles  Article[] // Artikel yang ditulis oleh user ini (jika dia Writer)
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  slug        String   @unique // Untuk URL yang rapi (misal: /artikel/judul-berita)
+  
+  // Sesuai request dan JSON format
+  title       String   // Judul Berita
+  description String   // Mapping dari "contentSnippet"
+  content     String   // Isi lengkap berita (HTML atau Markdown)
+  
+  // Menangani Image object (ambil URL "large" sebagai utama)
+  imageUrl    String?  // Mapping dari "image.large"
+  
+  // Metadata tambahan dari JSON
+  sourceLink  String?  // Mapping dari "link" (jika ada sumber eksternal)
+  publishedAt DateTime @default(now()) // Mapping dari "isoDate"
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relasi ke Penulis
+  authorId    String?
+  author      User?    @relation(fields: [authorId], references: [id])
+
+  // Relasi ke fitur user lain
+  bookmarks   Bookmark[]
+  comments    Comment[]
+  
+  // Kategori (Opsional, tapi sangat disarankan untuk web news)
+  category    String?  
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, articleId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  articleId String
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  nama      String
+  email     String
+  subjek    String
+  isiPesan  String
+  createdAt DateTime @default(now())
 }
