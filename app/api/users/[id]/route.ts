@@ -28,6 +28,7 @@ export async function GET(
             publishedAt: true,
             imageUrl: true,
             description: true,
+            category: true,
           },
           orderBy: { createdAt: "desc" }, // Urutkan dari berita terbaru
         },

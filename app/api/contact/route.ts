@@ -6,7 +6,7 @@ import { z } from "zod";
 import {
   sendContactNotification,
   sendContactConfirmation,
-} from "@/lib/email/resend";
+} from "@/lib/email/nodemailer";
 
 /**
  * POST /api/contact

@@ -1,20 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { requireAdminOrWriter } from "@/lib/auth-helpers";
 import prisma from "@/lib/prisma";
 import { slugify, toISODate } from "@/lib/utils";
 import type { Prisma, Role } from "@/src/generated";
-
-function unauthenticatedResponse() {
-  return NextResponse.json(
-    { status: "error", message: "Silakan login terlebih dahulu." },
-    { status: 401 }
-  );
-}
-
-function forbiddenResponse(message = "Anda tidak memiliki akses.") {
-  return NextResponse.json({ status: "error", message }, { status: 403 });
-}
 
 async function getArticleForUpdate(
   articleId: string,
@@ -47,22 +35,20 @@ async function ensureUniqueSlug(baseSlug: string, currentId: string) {
 }
 
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ articleId: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return unauthenticatedResponse();
+  const authResult = await requireAdminOrWriter(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
   }
-
+  const { session } = authResult;
   const { articleId } = await params;
   const role = session.user.role as Role;
   const userId = session.user.id;
-
-  if (role === "USER") {
-    return forbiddenResponse();
-  }
 
   const where =
     role === "ADMIN"
@@ -99,19 +85,17 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ articleId: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return unauthenticatedResponse();
+  const authResult = await requireAdminOrWriter(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
   }
-
+  const { session } = authResult;
   const { articleId } = await params;
   const role = session.user.role as Role;
   const userId = session.user.id;
-
-  if (role === "USER") {
-    return forbiddenResponse();
-  }
 
   const existingArticle = await getArticleForUpdate(
     articleId,
@@ -218,22 +202,20 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ articleId: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return unauthenticatedResponse();
+  const authResult = await requireAdminOrWriter(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
   }
-
+  const { session } = authResult;
   const { articleId } = await params;
   const role = session.user.role as Role;
   const userId = session.user.id;
-
-  if (role === "USER") {
-    return forbiddenResponse();
-  }
 
   const existingArticle = await getArticleForUpdate(
     articleId,

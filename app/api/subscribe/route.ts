@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { sendNewsletterConfirmation } from "@/lib/email/resend";
+import { sendNewsletterConfirmation } from "@/lib/email/nodemailer";
 
 function validateEmail(email?: string) {
   const normalized = email?.trim().toLowerCase();

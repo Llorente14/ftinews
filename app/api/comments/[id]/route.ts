@@ -1,15 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth-helpers";
 import { commentInclude, serializeComment } from "../_helpers";
-
-function unauthenticatedResponse() {
-  return NextResponse.json(
-    { status: "error", message: "Silakan login terlebih dahulu." },
-    { status: 401 }
-  );
-}
 
 function validateContent(content?: string) {
   const trimmed = content?.trim();
@@ -29,8 +21,14 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return unauthenticatedResponse();
+  const authResult = await requireAuth(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
+  }
+  const { session } = authResult;
 
   const { id } = await params;
   const comment = await prisma.comment.findUnique({
@@ -78,11 +76,17 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return unauthenticatedResponse();
+  const authResult = await requireAuth(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
+  }
+  const { session } = authResult;
 
   const { id } = await params;
   const comment = await prisma.comment.findUnique({

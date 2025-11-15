@@ -1,8 +1,55 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import { getToken } from "next-auth/jwt";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
+
+async function getSession(request: NextRequest) {
+  // Try getServerSession first (for browser cookies)
+  try {
+    const session = await getServerSession(authOptions);
+    if (session?.user) return session;
+  } catch (err) {
+    console.error("getServerSession error:", err);
+  }
+
+  // Fallback: Try JWT token from cookies or Authorization header (for API clients like Bruno)
+  try {
+    const token = await getToken({ 
+      req: request, 
+      secret: process.env.NEXTAUTH_SECRET 
+    });
+    
+    if (token) {
+      // Get user from database
+      const user = await prisma.user.findUnique({
+        where: { id: token.sub || (token.id as string) },
+        select: {
+          id: true,
+          email: true,
+          namaLengkap: true,
+          role: true,
+        },
+      });
+      
+      if (user) {
+        return {
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.namaLengkap,
+            role: user.role,
+          },
+        };
+      }
+    }
+  } catch (err) {
+    console.error("getToken error:", err);
+  }
+
+  return null;
+}
 
 function unauthenticated() {
   return NextResponse.json(
@@ -68,7 +115,7 @@ function validateUpdatePayload(body: unknown) {
 }
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await getSession(request);
   if (!session) return unauthenticated();
 
   const user = await prisma.user.findUnique({
@@ -99,7 +146,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
-  const session = await getServerSession(authOptions);
+  const session = await getSession(request);
   if (!session) return unauthenticated();
 
   try {

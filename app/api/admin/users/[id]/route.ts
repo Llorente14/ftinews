@@ -1,46 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth-helpers";
 import bcrypt from "bcryptjs";
 import type { Prisma, Role } from "@/src/generated";
-
-function unauthenticatedResponse() {
-  return NextResponse.json(
-    { status: "error", message: "Silakan login terlebih dahulu." },
-    { status: 401 }
-  );
-}
-
-function forbiddenResponse() {
-  return NextResponse.json(
-    {
-      status: "error",
-      message: "Hanya admin yang dapat mengakses endpoint ini.",
-    },
-    { status: 403 }
-  );
-}
 
 function validateRole(role?: string): role is Role {
   return role === "USER" || role === "WRITER" || role === "ADMIN";
 }
 
-async function ensureAdmin() {
-  const session = await getServerSession(authOptions);
-  if (!session) return { session: null, error: unauthenticatedResponse() };
-  if (session.user.role !== "ADMIN") {
-    return { session, error: forbiddenResponse() };
-  }
-  return { session, error: null };
-}
-
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { session, error } = await ensureAdmin();
-  if (error || !session) return error ?? unauthenticatedResponse();
+  const authResult = await requireAdmin(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
+  }
+  const { session } = authResult;
 
   const { id } = await params;
   const user = await prisma.user.findUnique({
@@ -77,8 +56,14 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { session, error } = await ensureAdmin();
-  if (error || !session) return error ?? unauthenticatedResponse();
+  const authResult = await requireAdmin(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
+  }
+  const { session } = authResult;
 
   const { id } = await params;
   try {
@@ -187,11 +172,17 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { session, error } = await ensureAdmin();
-  if (error || !session) return error ?? unauthenticatedResponse();
+  const authResult = await requireAdmin(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
+  }
+  const { session } = authResult;
 
   const { id } = await params;
   if (session.user.id === id) {

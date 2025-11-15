@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { requireAuth } from "@/lib/auth-helpers";
 import type { Prisma } from "@/src/generated";
 import { articleInclude, serializeArticle } from "../articles/_helpers";
 
@@ -12,13 +11,6 @@ const bookmarkInclude = {
 } satisfies Prisma.BookmarkInclude;
 
 type BookmarkWithArticle = Prisma.BookmarkGetPayload<{ include: typeof bookmarkInclude }>;
-
-function unauthenticatedResponse() {
-  return NextResponse.json(
-    { status: "error", message: "Silakan login terlebih dahulu." },
-    { status: 401 }
-  );
-}
 
 function serializeBookmark(bookmark: BookmarkWithArticle) {
   return {
@@ -32,8 +24,14 @@ function serializeBookmark(bookmark: BookmarkWithArticle) {
 }
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return unauthenticatedResponse();
+  const authResult = await requireAuth(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
+  }
+  const { session } = authResult;
 
   const bookmarks = await prisma.bookmark.findMany({
     where: { userId: session.user.id },
@@ -52,8 +50,14 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  if (!session) return unauthenticatedResponse();
+  const authResult = await requireAuth(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
+  }
+  const { session } = authResult;
 
   try {
     const body = await request.json();

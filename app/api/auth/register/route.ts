@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
-import { sendWelcomeEmail } from "@/lib/email/resend";
+import { sendWelcomeEmail } from "@/lib/email/nodemailer";
 
 /**
  * POST /api/auth/register

@@ -1,41 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
 import prisma from "@/lib/prisma";
-import { authOptions } from "@/lib/auth";
+import { requireAdmin } from "@/lib/auth-helpers";
 import bcrypt from "bcryptjs";
 import type { Role } from "@/src/generated";
-
-function unauthenticatedResponse() {
-  return NextResponse.json(
-    { status: "error", message: "Silakan login terlebih dahulu." },
-    { status: 401 }
-  );
-}
-
-function forbiddenResponse() {
-  return NextResponse.json(
-    {
-      status: "error",
-      message: "Hanya admin yang dapat mengakses endpoint ini.",
-    },
-    { status: 403 }
-  );
-}
 
 function validateRole(role?: string): role is Role {
   return role === "USER" || role === "WRITER" || role === "ADMIN";
 }
 
-export async function GET() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return unauthenticatedResponse();
+export async function GET(request: NextRequest) {
+  const authResult = await requireAdmin(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
   }
-
-  if (session.user.role !== "ADMIN") {
-    return forbiddenResponse();
-  }
+  const { session } = authResult;
 
   const users = await prisma.user.findMany({
     select: {
@@ -61,15 +42,14 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return unauthenticatedResponse();
+  const authResult = await requireAdmin(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
   }
-
-  if (session.user.role !== "ADMIN") {
-    return forbiddenResponse();
-  }
+  const { session } = authResult;
 
   try {
     const body = await request.json();

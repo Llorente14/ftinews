@@ -1,20 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { requireAdminOrWriter } from "@/lib/auth-helpers";
 import prisma from "@/lib/prisma";
 import { slugify, toISODate } from "@/lib/utils";
 import type { Prisma, Role } from "@/src/generated";
-
-function forbiddenResponse(message = "Anda tidak memiliki akses.") {
-  return NextResponse.json({ status: "error", message }, { status: 403 });
-}
-
-function unauthenticatedResponse() {
-  return NextResponse.json(
-    { status: "error", message: "Silakan login terlebih dahulu." },
-    { status: 401 }
-  );
-}
 
 async function ensureUniqueSlug(baseSlug: string) {
   const normalizedBase = baseSlug || `artikel-${Date.now()}`;
@@ -31,18 +19,16 @@ async function ensureUniqueSlug(baseSlug: string) {
 }
 
 export async function GET(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return unauthenticatedResponse();
+  const authResult = await requireAdminOrWriter(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
   }
-
+  const { session } = authResult;
   const role = session.user.role as Role;
   const userId = session.user.id;
-
-  if (role === "USER") {
-    return forbiddenResponse();
-  }
 
   const { searchParams } = new URL(request.url);
   const search = searchParams.get("search");
@@ -87,18 +73,16 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return unauthenticatedResponse();
+  const authResult = await requireAdminOrWriter(request);
+  if (authResult.error) {
+    return NextResponse.json(
+      { status: authResult.error.status, message: authResult.error.message },
+      { status: authResult.error.statusCode }
+    );
   }
-
+  const { session } = authResult;
   const role = session.user.role as Role;
   const userId = session.user.id;
-
-  if (role === "USER") {
-    return forbiddenResponse();
-  }
 
   try {
     const body = await request.json();
