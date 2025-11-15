@@ -40,7 +40,9 @@ export function useProfile() {
     setError(null);
 
     try {
-      const res = await fetch("/api/users/me");
+      const res = await fetch("/api/users/me", {
+        credentials: "include",
+      });
       const result: ProfileResponse = await res.json();
 
       if (!res.ok || result.status === "error") {
@@ -80,6 +82,7 @@ export function useUpdateProfile() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const result: ProfileResponse = await res.json();
@@ -101,8 +104,44 @@ export function useUpdateProfile() {
   return { updateProfile, isLoading, error };
 }
 
+type PublicProfileResponse = {
+  status: "success" | "error";
+  message?: string;
+  data: {
+    user: User & {
+      articles?: Array<{
+        id: string;
+        title: string;
+        slug: string;
+        publishedAt: string;
+        imageUrl: string | null;
+        description: string;
+        category: string | null;
+      }>;
+      _count?: {
+        articles: number;
+      };
+    };
+  };
+};
+
 export function usePublicProfile() {
-  const [profile, setProfile] = useState<User | null>(null);
+  const [profile, setProfile] = useState<
+    (User & {
+      articles?: Array<{
+        id: string;
+        title: string;
+        slug: string;
+        publishedAt: string;
+        imageUrl: string | null;
+        description: string;
+        category: string | null;
+      }>;
+      _count?: {
+        articles: number;
+      };
+    }) | null
+  >(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -112,7 +151,7 @@ export function usePublicProfile() {
 
     try {
       const res = await fetch(`/api/users/${userId}`);
-      const result: ProfileResponse = await res.json();
+      const result: PublicProfileResponse = await res.json();
 
       if (!res.ok || result.status === "error") {
         throw new Error(result.message || "User tidak ditemukan");

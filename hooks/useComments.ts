@@ -80,6 +80,7 @@ export function useAddComment() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ articleId, content }),
+        credentials: "include",
       });
 
       const result: CommentResponse = await res.json();
@@ -114,6 +115,7 @@ export function useUpdateComment() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content }),
+        credentials: "include",
       });
 
       const result: CommentResponse = await res.json();
@@ -146,6 +148,7 @@ export function useDeleteComment() {
     try {
       const res = await fetch(`/api/comments/${commentId}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       const result: { status: "success" | "error"; message: string } = await res.json();

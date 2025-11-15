@@ -86,7 +86,9 @@ export function useDashboardArticles(filters?: DashboardFilters) {
       if (activeFilters.search) params.set("search", activeFilters.search);
       if (activeFilters.category) params.set("category", activeFilters.category);
 
-      const res = await fetch(`/api/dashboard/articles?${params.toString()}`);
+      const res = await fetch(`/api/dashboard/articles?${params.toString()}`, {
+        credentials: "include",
+      });
       const result: ArticlesResponse = await res.json();
 
       if (!res.ok || result.status === "error") {
@@ -120,7 +122,9 @@ export function useDashboardArticle(articleId?: string) {
     setError(null);
 
     try {
-      const res = await fetch(`/api/dashboard/articles/${id}`);
+      const res = await fetch(`/api/dashboard/articles/${id}`, {
+        credentials: "include",
+      });
       const result: ArticleResponse = await res.json();
 
       if (!res.ok || result.status === "error") {
@@ -154,6 +158,7 @@ export function useCreateArticle() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const result: ArticleResponse = await res.json();
@@ -188,6 +193,7 @@ export function useUpdateArticle() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const result: ArticleResponse = await res.json();
@@ -220,6 +226,7 @@ export function useDeleteArticle() {
     try {
       const res = await fetch(`/api/dashboard/articles/${articleId}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       const result: { status: "success" | "error"; message: string } = await res.json();

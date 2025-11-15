@@ -51,7 +51,9 @@ export function useBookmarks() {
     setError(null);
 
     try {
-      const res = await fetch("/api/bookmarks");
+      const res = await fetch("/api/bookmarks", {
+        credentials: "include",
+      });
       const result: BookmarksResponse = await res.json();
 
       if (!res.ok || result.status === "error") {
@@ -89,6 +91,7 @@ export function useAddBookmark() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ articleId }),
+        credentials: "include",
       });
 
       const result: BookmarkResponse = await res.json();
@@ -121,6 +124,7 @@ export function useDeleteBookmark() {
     try {
       const res = await fetch(`/api/bookmarks/${bookmarkId}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       const result: { status: "success" | "error"; message: string } = await res.json();

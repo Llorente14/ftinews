@@ -58,7 +58,9 @@ export function useAdminUsers() {
     setError(null);
 
     try {
-      const res = await fetch("/api/admin/users");
+      const res = await fetch("/api/admin/users", {
+        credentials: "include",
+      });
       const result: UsersResponse = await res.json();
 
       if (!res.ok || result.status === "error") {
@@ -92,7 +94,9 @@ export function useAdminUser(userId?: string) {
     setError(null);
 
     try {
-      const res = await fetch(`/api/admin/users/${id}`);
+      const res = await fetch(`/api/admin/users/${id}`, {
+        credentials: "include",
+      });
       const result: UserResponse = await res.json();
 
       if (!res.ok || result.status === "error") {
@@ -126,6 +130,7 @@ export function useCreateUser() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const result: UserResponse = await res.json();
@@ -160,6 +165,7 @@ export function useUpdateUser() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        credentials: "include",
       });
 
       const result: UserResponse = await res.json();
@@ -192,6 +198,7 @@ export function useDeleteUser() {
     try {
       const res = await fetch(`/api/admin/users/${userId}`, {
         method: "DELETE",
+        credentials: "include",
       });
 
       const result: { status: "success" | "error"; message: string } = await res.json();
