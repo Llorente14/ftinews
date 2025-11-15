@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 
 type Article = {
   id: string;
@@ -63,9 +63,18 @@ type ArticlesFilters = {
 
 export function useArticles(filters?: ArticlesFilters) {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [meta, setMeta] = useState<ArticlesResponse["data"]["meta"] | null>(null);
+  const [meta, setMeta] = useState<ArticlesResponse["data"]["meta"] | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const filtersRef = useRef(filters);
+  const hasFetchedRef = useRef(false);
+
+  // Update filters ref when filters change
+  useEffect(() => {
+    filtersRef.current = filters;
+  }, [filters]);
 
   const fetchArticles = useCallback(async (newFilters?: ArticlesFilters) => {
     setIsLoading(true);
@@ -73,15 +82,20 @@ export function useArticles(filters?: ArticlesFilters) {
 
     try {
       const params = new URLSearchParams();
-      const activeFilters = newFilters || filters || {};
+      const activeFilters = newFilters || filtersRef.current || {};
 
       if (activeFilters.page) params.set("page", activeFilters.page.toString());
-      if (activeFilters.perPage) params.set("perPage", activeFilters.perPage.toString());
+      if (activeFilters.perPage)
+        params.set("perPage", activeFilters.perPage.toString());
       if (activeFilters.search) params.set("search", activeFilters.search);
-      if (activeFilters.category) params.set("category", activeFilters.category);
-      if (activeFilters.authorId) params.set("authorId", activeFilters.authorId);
-      if (activeFilters.publishedFrom) params.set("publishedFrom", activeFilters.publishedFrom);
-      if (activeFilters.publishedTo) params.set("publishedTo", activeFilters.publishedTo);
+      if (activeFilters.category)
+        params.set("category", activeFilters.category);
+      if (activeFilters.authorId)
+        params.set("authorId", activeFilters.authorId);
+      if (activeFilters.publishedFrom)
+        params.set("publishedFrom", activeFilters.publishedFrom);
+      if (activeFilters.publishedTo)
+        params.set("publishedTo", activeFilters.publishedTo);
       if (activeFilters.sort) params.set("sort", activeFilters.sort);
 
       const res = await fetch(`/api/articles?${params.toString()}`);
@@ -93,6 +107,7 @@ export function useArticles(filters?: ArticlesFilters) {
 
       setArticles(result.data.items);
       setMeta(result.data.meta);
+      hasFetchedRef.current = true;
       return result;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Terjadi kesalahan";
@@ -101,7 +116,7 @@ export function useArticles(filters?: ArticlesFilters) {
     } finally {
       setIsLoading(false);
     }
-  }, [filters]);
+  }, []); // Empty deps - function is stable
 
   return { articles, meta, fetchArticles, isLoading, error };
 }
@@ -138,4 +153,3 @@ export function useArticle(slug: string) {
 
   return { article, fetchArticle, isLoading, error };
 }
-
