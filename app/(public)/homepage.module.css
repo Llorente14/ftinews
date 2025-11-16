@@ -891,9 +891,11 @@
 
 /* Newsletter Subscription Section */
 .newsletterSection {
-  width: 960px;
+  max-width: 960px;
   margin: 64px auto 0;
   padding: 0 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .newsletterContent {
@@ -903,6 +905,8 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .newsletterContent::before {
@@ -1037,11 +1041,17 @@
   }
 
   .newsletterSection {
-    margin: 48px 0 0;
+    max-width: 100%;
+    margin: 48px auto 0;
+    padding: 0 16px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .newsletterContent {
     padding: 48px 20px;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .newsletterTitle {
@@ -1055,21 +1065,40 @@
   .newsletterForm {
     max-width: 100%;
     flex-direction: column;
+    width: 100%;
   }
 
   .newsletterInput {
     width: 100%;
+    box-sizing: border-box;
   }
 
   .newsletterButton {
     width: 100%;
     justify-content: center;
+    box-sizing: border-box;
   }
 }
 
 @media (max-width: 480px) {
   .sponsoredGrid {
     grid-template-columns: 1fr;
+  }
+
+  .newsletterSection {
+    padding: 0 12px;
+  }
+
+  .newsletterContent {
+    padding: 32px 16px;
+  }
+
+  .newsletterTitle {
+    font-size: 20px;
+  }
+
+  .newsletterSubtitle {
+    font-size: 13px;
   }
 }
 
