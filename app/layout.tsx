@@ -25,6 +25,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
+      <head>
+        <link
+          href="https://cdn.boxicons.com/3.0.3/fonts/basic/boxicons.min.css"
+          rel="stylesheet"
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
