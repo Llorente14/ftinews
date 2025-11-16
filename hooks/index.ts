@@ -3,6 +3,7 @@ export * from "./useAuth";
 
 // Public Hooks
 export * from "./useArticles";
+export * from "./useCategories";
 export * from "./useSubscribe";
 export * from "./useContact";
 
@@ -16,4 +17,3 @@ export * from "./useDashboard";
 
 // Admin Hooks
 export * from "./useAdmin";
-
