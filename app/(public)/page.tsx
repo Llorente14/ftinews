@@ -17,6 +17,7 @@ export default function HomePage() {
     sort: "newest",
   });
 
+<<<<<<< HEAD
   // Fetch articles for different tabs
   const {
     articles: latestTabArticles,
@@ -57,6 +58,9 @@ export default function HomePage() {
   });
 
   // Fetch popular articles for highlights section
+=======
+  // Fetch popular articles (sorted by newest, can be enhanced with bookmark/comment count)
+>>>>>>> e911bd6ce119b3f9b3b68aaf9dc5c991be5d455a
   const {
     articles: popularArticles,
     fetchArticles: fetchPopularArticles,
@@ -94,6 +98,7 @@ export default function HomePage() {
   useEffect(() => {
     fetchArticles();
     fetchPopularArticles();
+<<<<<<< HEAD
     fetchLatestTab();
     fetchPopularTab();
     fetchNewsTab();
@@ -120,6 +125,11 @@ export default function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
+=======
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run once on mount
+
+>>>>>>> e911bd6ce119b3f9b3b68aaf9dc5c991be5d455a
   // Get featured article (first article)
   const featuredArticle = articles[0];
 
@@ -388,7 +398,13 @@ export default function HomePage() {
               onClick={() => setActiveTab("latest")}
             >
               <h3 className={styles.tabTitle}>Latest</h3>
+<<<<<<< HEAD
               <span className={styles.tabLink}>View All →</span>
+=======
+              <Link href="/artikel" className={styles.tabLink}>
+                View All →
+              </Link>
+>>>>>>> e911bd6ce119b3f9b3b68aaf9dc5c991be5d455a
             </div>
             <div
               className={`${styles.tab} ${
@@ -397,7 +413,13 @@ export default function HomePage() {
               onClick={() => setActiveTab("press")}
             >
               <h3 className={styles.tabTitle}>Popular</h3>
+<<<<<<< HEAD
               <span className={styles.tabLink}>View All →</span>
+=======
+              <Link href="/artikel" className={styles.tabLink}>
+                View All →
+              </Link>
+>>>>>>> e911bd6ce119b3f9b3b68aaf9dc5c991be5d455a
             </div>
             <div
               className={`${styles.tab} ${
@@ -406,7 +428,13 @@ export default function HomePage() {
               onClick={() => setActiveTab("news")}
             >
               <h3 className={styles.tabTitle}>News</h3>
+<<<<<<< HEAD
               <span className={styles.tabLink}>View All →</span>
+=======
+              <Link href="/artikel" className={styles.tabLink}>
+                View All →
+              </Link>
+>>>>>>> e911bd6ce119b3f9b3b68aaf9dc5c991be5d455a
             </div>
             <div
               className={`${styles.tab} ${
@@ -415,11 +443,18 @@ export default function HomePage() {
               onClick={() => setActiveTab("announcement")}
             >
               <h3 className={styles.tabTitle}>Announcement</h3>
+<<<<<<< HEAD
               <span className={styles.tabLink}>View All →</span>
+=======
+              <Link href="/artikel" className={styles.tabLink}>
+                View All →
+              </Link>
+>>>>>>> e911bd6ce119b3f9b3b68aaf9dc5c991be5d455a
             </div>
           </div>
 
           <div className={styles.latestGrid}>
+<<<<<<< HEAD
             {(() => {
               let displayArticles: typeof latestTabArticles = [];
               let isLoading = false;
@@ -511,6 +546,33 @@ export default function HomePage() {
                 );
               });
             })()}
+=======
+            {latestArticles.slice(0, 2).map((article) => (
+              <Link
+                key={article.id}
+                href={`/artikel/${article.slug}`}
+                className={styles.latestCard}
+              >
+                <div
+                  className={styles.latestCardImage}
+                  style={{
+                    backgroundImage: `url(${
+                      article.imageUrl || "/placeholder.jpg"
+                    })`,
+                  }}
+                ></div>
+                <div className={styles.latestCardContent}>
+                  <span className={styles.latestCardCategory}>
+                    {article.category?.toUpperCase() || "NEWS"}
+                  </span>
+                  <h4 className={styles.latestCardTitle}>{article.title}</h4>
+                  <p className={styles.latestCardDescription}>
+                    {article.description}
+                  </p>
+                </div>
+              </Link>
+            ))}
+>>>>>>> e911bd6ce119b3f9b3b68aaf9dc5c991be5d455a
           </div>
         </section>
 
