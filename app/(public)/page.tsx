@@ -17,7 +17,46 @@ export default function HomePage() {
     sort: "newest",
   });
 
-  // Fetch popular articles (sorted by newest, can be enhanced with bookmark/comment count)
+  // Fetch articles for different tabs
+  const {
+    articles: latestTabArticles,
+    fetchArticles: fetchLatestTab,
+    isLoading: isLoadingLatestTab,
+  } = useArticles({
+    perPage: 2,
+    sort: "newest",
+  });
+
+  const {
+    articles: popularTabArticles,
+    fetchArticles: fetchPopularTab,
+    isLoading: isLoadingPopularTab,
+  } = useArticles({
+    perPage: 2,
+    sort: "newest", // Can be enhanced with bookmark/comment count
+  });
+
+  const {
+    articles: newsTabArticles,
+    fetchArticles: fetchNewsTab,
+    isLoading: isLoadingNewsTab,
+  } = useArticles({
+    perPage: 2,
+    category: "news",
+    sort: "newest",
+  });
+
+  const {
+    articles: announcementTabArticles,
+    fetchArticles: fetchAnnouncementTab,
+    isLoading: isLoadingAnnouncementTab,
+  } = useArticles({
+    perPage: 2,
+    category: "announcement",
+    sort: "newest",
+  });
+
+  // Fetch popular articles for highlights section
   const {
     articles: popularArticles,
     fetchArticles: fetchPopularArticles,
@@ -55,8 +94,31 @@ export default function HomePage() {
   useEffect(() => {
     fetchArticles();
     fetchPopularArticles();
+    fetchLatestTab();
+    fetchPopularTab();
+    fetchNewsTab();
+    fetchAnnouncementTab();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run once on mount
+
+  // Fetch articles when tab changes
+  useEffect(() => {
+    switch (activeTab) {
+      case "latest":
+        fetchLatestTab();
+        break;
+      case "press":
+        fetchPopularTab();
+        break;
+      case "news":
+        fetchNewsTab();
+        break;
+      case "announcement":
+        fetchAnnouncementTab();
+        break;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab]);
 
   // Get featured article (first article)
   const featuredArticle = articles[0];
@@ -326,9 +388,7 @@ export default function HomePage() {
               onClick={() => setActiveTab("latest")}
             >
               <h3 className={styles.tabTitle}>Latest</h3>
-              <Link href="/artikel" className={styles.tabLink}>
-                View All →
-              </Link>
+              <span className={styles.tabLink}>View All →</span>
             </div>
             <div
               className={`${styles.tab} ${
@@ -337,9 +397,7 @@ export default function HomePage() {
               onClick={() => setActiveTab("press")}
             >
               <h3 className={styles.tabTitle}>Popular</h3>
-              <Link href="/artikel" className={styles.tabLink}>
-                View All →
-              </Link>
+              <span className={styles.tabLink}>View All →</span>
             </div>
             <div
               className={`${styles.tab} ${
@@ -348,9 +406,7 @@ export default function HomePage() {
               onClick={() => setActiveTab("news")}
             >
               <h3 className={styles.tabTitle}>News</h3>
-              <Link href="/artikel" className={styles.tabLink}>
-                View All →
-              </Link>
+              <span className={styles.tabLink}>View All →</span>
             </div>
             <div
               className={`${styles.tab} ${
@@ -359,38 +415,102 @@ export default function HomePage() {
               onClick={() => setActiveTab("announcement")}
             >
               <h3 className={styles.tabTitle}>Announcement</h3>
-              <Link href="/artikel" className={styles.tabLink}>
-                View All →
-              </Link>
+              <span className={styles.tabLink}>View All →</span>
             </div>
           </div>
 
           <div className={styles.latestGrid}>
-            {latestArticles.slice(0, 2).map((article) => (
-              <Link
-                key={article.id}
-                href={`/artikel/${article.slug}`}
-                className={styles.latestCard}
-              >
-                <div
-                  className={styles.latestCardImage}
-                  style={{
-                    backgroundImage: `url(${
-                      article.imageUrl || "/placeholder.jpg"
-                    })`,
-                  }}
-                ></div>
-                <div className={styles.latestCardContent}>
-                  <span className={styles.latestCardCategory}>
-                    {article.category?.toUpperCase() || "NEWS"}
-                  </span>
-                  <h4 className={styles.latestCardTitle}>{article.title}</h4>
-                  <p className={styles.latestCardDescription}>
-                    {article.description}
-                  </p>
-                </div>
-              </Link>
-            ))}
+            {(() => {
+              let displayArticles: typeof latestTabArticles = [];
+              let isLoading = false;
+
+              switch (activeTab) {
+                case "latest":
+                  displayArticles = latestTabArticles;
+                  isLoading = isLoadingLatestTab;
+                  break;
+                case "press":
+                  displayArticles = popularTabArticles;
+                  isLoading = isLoadingPopularTab;
+                  break;
+                case "news":
+                  displayArticles = newsTabArticles;
+                  isLoading = isLoadingNewsTab;
+                  break;
+                case "announcement":
+                  displayArticles = announcementTabArticles;
+                  isLoading = isLoadingAnnouncementTab;
+                  break;
+              }
+
+              if (isLoading && displayArticles.length === 0) {
+                return (
+                  <>
+                    <div className={styles.latestCardPlaceholder}></div>
+                    <div className={styles.latestCardPlaceholder}></div>
+                  </>
+                );
+              }
+
+              if (displayArticles.length === 0) {
+                return (
+                  <>
+                    <div className={styles.latestCardPlaceholder}>
+                      <p>Belum ada artikel</p>
+                    </div>
+                    <div className={styles.latestCardPlaceholder}>
+                      <p>untuk kategori ini</p>
+                    </div>
+                  </>
+                );
+              }
+
+              // Ensure we always show 2 cards (fill with placeholders if needed)
+              const cardsToShow: ((typeof displayArticles)[0] | null)[] = [
+                ...displayArticles,
+              ];
+              while (cardsToShow.length < 2) {
+                cardsToShow.push(null);
+              }
+
+              return cardsToShow.slice(0, 2).map((article, index) => {
+                if (!article) {
+                  return (
+                    <div
+                      key={`placeholder-${index}`}
+                      className={styles.latestCardPlaceholder}
+                    ></div>
+                  );
+                }
+                return (
+                  <Link
+                    key={article.id}
+                    href={`/artikel/${article.slug}`}
+                    className={styles.latestCard}
+                  >
+                    <div
+                      className={styles.latestCardImage}
+                      style={{
+                        backgroundImage: `url(${
+                          article.imageUrl || "/placeholder.jpg"
+                        })`,
+                      }}
+                    ></div>
+                    <div className={styles.latestCardContent}>
+                      <span className={styles.latestCardCategory}>
+                        {article.category?.toUpperCase() || "NEWS"}
+                      </span>
+                      <h4 className={styles.latestCardTitle}>
+                        {article.title}
+                      </h4>
+                      <p className={styles.latestCardDescription}>
+                        {article.description}
+                      </p>
+                    </div>
+                  </Link>
+                );
+              });
+            })()}
           </div>
         </section>
 
