@@ -28,6 +28,7 @@
     "resend": "^6.4.2"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
