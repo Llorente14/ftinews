@@ -27,6 +27,16 @@ type UpdateProfileData = {
   password?: string;
 };
 
+type UserComment = {
+  id: string;
+  content: string;
+  createdAt: string;
+  article: {
+    title: string;
+    slug: string;
+  };
+};
+
 export function useProfile() {
   const { data: session } = useSession();
   const [profile, setProfile] = useState<User | null>(null);
@@ -104,6 +114,34 @@ export function useUpdateProfile() {
   return { updateProfile, isLoading, error };
 }
 
+export function useUserComments() {
+  const { data: session } = useSession();
+  const [comments, setComments] = useState<UserComment[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchUserComments = useCallback(async () => {
+    if (!session) return;
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/users/me/comments");
+      const result = await res.json();
+      if (result.status === "success") {
+        setComments(result.data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [session]);
+
+  useEffect(() => {
+    if (session) fetchUserComments();
+  }, [session, fetchUserComments]);
+
+  return { comments, isLoading };
+}
+
 type PublicProfileResponse = {
   status: "success" | "error";
   message?: string;
@@ -127,20 +165,21 @@ type PublicProfileResponse = {
 
 export function usePublicProfile() {
   const [profile, setProfile] = useState<
-    (User & {
-      articles?: Array<{
-        id: string;
-        title: string;
-        slug: string;
-        publishedAt: string;
-        imageUrl: string | null;
-        description: string;
-        category: string | null;
-      }>;
-      _count?: {
-        articles: number;
-      };
-    }) | null
+    | (User & {
+        articles?: Array<{
+          id: string;
+          title: string;
+          slug: string;
+          publishedAt: string;
+          imageUrl: string | null;
+          description: string;
+          category: string | null;
+        }>;
+        _count?: {
+          articles: number;
+        };
+      })
+    | null
   >(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -170,4 +209,3 @@ export function usePublicProfile() {
 
   return { profile, fetchPublicProfile, isLoading, error };
 }
-
