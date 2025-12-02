@@ -42,7 +42,6 @@
     background-color: transparent !important;
     border: none !important;
     color: #94a3b8;
-    /* Slate-400 */
     padding-left: 1rem;
 }
 
@@ -64,7 +63,6 @@
 
 .search-clear-btn:hover {
     color: #ef4444;
-    /* Merah saat hover delete */
 }
 
 /* --- Article List Item (Card Style) --- */
@@ -158,7 +156,6 @@
     margin-top: 3rem;
     padding-top: 2rem;
     border-top: 1px solid #f1f5f9;
-    /* Garis pemisah halus */
 }
 
 .pagination-button {
@@ -170,13 +167,11 @@
     align-items: center;
     justify-content: center;
     height: 2.5rem;
-    /* Sedikit lebih besar */
     border-radius: 9999px !important;
     gap: 0.5rem;
     padding-left: 1rem;
     padding-right: 1rem;
     border: 1px solid transparent;
-    /* Border transparan default */
     background-color: transparent;
     transition: all 0.2s;
 }
@@ -193,7 +188,6 @@
 
 .pagination-button.active {
     background-color: #1e293b !important;
-    /* Warna gelap modern */
     color: #ffffff !important;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
