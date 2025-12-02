@@ -10,10 +10,13 @@ import { useProfile, useUpdateProfile, useUserComments } from '@/hooks/useProfil
 import { useLogout } from '@/hooks/useAuth';
 
 export default function ProfilePage() {
+  // 1. Panggil Hooks
   const { profile, fetchProfile, isLoading: profileLoading } = useProfile();
   const { updateProfile, isLoading: isUpdating } = useUpdateProfile();
   const { logout, isLoading: isLoggingOut } = useLogout();
   const { comments, isLoading: commentsLoading } = useUserComments();
+
+  // 2. State Form
   const [inputName, setInputName] = useState("");
   const [inputPassword, setInputPassword] = useState("");
 
@@ -22,13 +25,53 @@ export default function ProfilePage() {
     type: "" // 'success' | 'error'
   });
 
+  // State untuk loading saat upload gambar
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  // 3. Efek: Isi form nama saat data profil selesai dimuat
   useEffect(() => {
     if (profile) {
       setInputName(profile.namaLengkap || "");
     }
   }, [profile]);
 
-  // Handler Ganti Nama
+  // --- Upload Gambar ---
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 1024 * 1024) {
+      setFeedback({ message: "Ukuran gambar terlalu besar (Max 1MB).", type: "error" });
+      return;
+    }
+
+    setIsUploadingImage(true);
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = async () => {
+      const base64String = reader.result as string;
+
+      try {
+        await updateProfile({ image: base64String });
+        
+        // Refresh data profil agar gambar baru langsung muncul
+        await fetchProfile(); 
+        
+        setFeedback({ message: "Foto profil berhasil diperbarui!", type: "success" });
+        
+        // Hilangkan pesan setelah 3 detik
+        setTimeout(() => setFeedback({ message: "", type: "" }), 3000);
+      } catch (err) {
+        console.error(err);
+        setFeedback({ message: "Gagal mengupload gambar.", type: "error" });
+      } finally {
+        setIsUploadingImage(false);
+      }
+    };
+  };
+
+  // --- Ganti Nama ---
   const handleSaveName = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputName.trim()) return;
@@ -45,7 +88,7 @@ export default function ProfilePage() {
     }
   };
 
-  // Handler Ganti Password
+  // --- Ganti Password ---
   const handleSavePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -66,6 +109,7 @@ export default function ProfilePage() {
     }
   };
 
+  // Loading State Awal
   if (profileLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-100">
@@ -81,20 +125,41 @@ export default function ProfilePage() {
       <div className={styles.container}>
         <div className={styles.card}>
           
-          {/* --- Header Profil --- */}
+          {/* --- Bagian Header Profil --- */}
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <div className={styles.profilePicWrapper}>
+              
+              {/* Gambar Profil */}
               <img
-                src="https://via.placeholder.com/100" 
+                src={profile?.image || "https://via.placeholder.com/100"} 
                 alt="Profile"
                 className={styles.profileImg}
+                style={{ opacity: isUploadingImage ? 0.5 : 1 }}
               />
-              <label htmlFor="profile-upload" className={styles.profilePicOverlay}>
-                <i className="bi bi-pencil-fill fs-4"></i>
-                <input type="file" id="profile-upload" className="d-none" style={{ display: 'none' }} />
+              
+              <label 
+                htmlFor="profile-upload" 
+                className={styles.profilePicOverlay}
+                style={{ cursor: isUploadingImage ? 'wait' : 'pointer' }}
+              >
+                {isUploadingImage ? (
+                  <span className="spinner-border spinner-border-sm text-white" role="status"></span>
+                ) : (
+                  <i className="bi bi-pencil-fill fs-4 text-white"></i>
+                )}
+                
+                <input 
+                  type="file" 
+                  id="profile-upload" 
+                  style={{ display: 'none' }} 
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={isUploadingImage}
+                />
               </label>
             </div>
 
+            {/* Nama & Email */}
             <h2 className={styles.title} style={{ marginBottom: '0.5rem' }}>
               {profile?.namaLengkap || "User"}
             </h2>
@@ -135,6 +200,7 @@ export default function ProfilePage() {
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Manage Account</h3>
             
+            {/* Form Ganti Nama */}
             <form onSubmit={handleSaveName} className={styles.formGroup}>
               <label htmlFor="namaLengkap" className={styles.label}>Change Name</label>
               <input
@@ -154,6 +220,7 @@ export default function ProfilePage() {
               </div>
             </form>
 
+            {/* Form Ganti Password */}
             <form onSubmit={handleSavePassword} className={styles.formGroup} style={{ marginTop: '2rem' }}>
               <label htmlFor="newPassword" className={styles.label}>Change Password</label>
               <input

@@ -63,12 +63,14 @@ function validateUpdatePayload(body: unknown) {
     namaLengkap?: string;
     nomorHandphone?: string;
     password?: string;
+    image?: string; 
   };
 
   const updates: {
     namaLengkap?: string;
     nomorHandphone?: string;
     password?: string;
+    image?: string;
   } = {};
 
   if (typeof payload.namaLengkap !== "undefined") {
@@ -107,6 +109,10 @@ function validateUpdatePayload(body: unknown) {
     updates.password = pwd;
   }
 
+  if (typeof payload.image !== "undefined") {
+    updates.image = payload.image;
+  }
+
   if (!Object.keys(updates).length) {
     return { ok: false, message: "Tidak ada perubahan yang dikirim." } as const;
   }
@@ -125,6 +131,7 @@ export async function GET(request: NextRequest) {
       namaLengkap: true,
       email: true,
       nomorHandphone: true,
+      image: true, 
       role: true,
       createdAt: true,
       updatedAt: true,
@@ -167,6 +174,10 @@ export async function PATCH(request: NextRequest) {
       data.namaLengkap = updates.namaLengkap;
     }
 
+    if (updates.image) {
+      data.image = updates.image;
+    }
+
     if (updates.nomorHandphone) {
       const existingPhone = await prisma.user.findFirst({
         where: {
@@ -198,6 +209,7 @@ export async function PATCH(request: NextRequest) {
         namaLengkap: true,
         email: true,
         nomorHandphone: true,
+        image: true, // <-- Added image select return
         role: true,
         updatedAt: true,
       },
@@ -216,4 +228,3 @@ export async function PATCH(request: NextRequest) {
     );
   }
 }
-

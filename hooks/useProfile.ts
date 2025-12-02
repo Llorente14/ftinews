@@ -25,6 +25,7 @@ type UpdateProfileData = {
   namaLengkap?: string;
   nomorHandphone?: string;
   password?: string;
+  image?: string;
 };
 
 type UserComment = {
