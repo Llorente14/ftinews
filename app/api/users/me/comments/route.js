@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { auth } from "@/lib/auth"; // Sesuaikan path auth helper kamu
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET() {
   try {
-    const session = await auth();
+    const session = await getServerSession(authOptions);
 
     if (!session?.user?.email) {
       return NextResponse.json(
@@ -28,6 +29,7 @@ export async function GET() {
 
     return NextResponse.json({ status: "success", data: comments });
   } catch (error) {
+    console.error(error);
     return NextResponse.json(
       { status: "error", message: "Error fetching comments" },
       { status: 500 }

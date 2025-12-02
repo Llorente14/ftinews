@@ -790,7 +790,7 @@ export default function HomePage() {
             </form>
             {subscribeError && (
               <p className={styles.newsletterError}>{subscribeError}</p>
-            )}
+            )}  
             {subscribeSuccess && (
               <p className={styles.newsletterSuccess}>
                 Terima kasih! Anda telah berlangganan newsletter kami.

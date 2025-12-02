@@ -6,13 +6,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from "next/link";
 import styles from './profile.module.css'; 
-import { useProfile, useUpdateProfile } from '@/hooks/useProfile'; 
+import { useProfile, useUpdateProfile, useUserComments } from '@/hooks/useProfile'; 
 import { useLogout } from '@/hooks/useAuth';
 
 export default function ProfilePage() {
   const { profile, fetchProfile, isLoading: profileLoading } = useProfile();
   const { updateProfile, isLoading: isUpdating } = useUpdateProfile();
   const { logout, isLoading: isLoggingOut } = useLogout();
+  const { comments, isLoading: commentsLoading } = useUserComments();
   const [inputName, setInputName] = useState("");
   const [inputPassword, setInputPassword] = useState("");
 
@@ -27,6 +28,7 @@ export default function ProfilePage() {
     }
   }, [profile]);
 
+  // Handler Ganti Nama
   const handleSaveName = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputName.trim()) return;
@@ -36,7 +38,6 @@ export default function ProfilePage() {
       await fetchProfile(); 
       
       setFeedback({ message: "Nama berhasil diperbarui.", type: "success" });
-      
       setTimeout(() => setFeedback({ message: "", type: "" }), 3000);
     } catch (err) {
       console.error(err);
@@ -44,6 +45,7 @@ export default function ProfilePage() {
     }
   };
 
+  // Handler Ganti Password
   const handleSavePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -57,7 +59,6 @@ export default function ProfilePage() {
       
       setFeedback({ message: "Password berhasil diubah. Silakan ingat password baru Anda.", type: "success" });
       setInputPassword(""); 
-      
       setTimeout(() => setFeedback({ message: "", type: "" }), 3000);
     } catch (err) {
       console.error(err);
@@ -80,10 +81,9 @@ export default function ProfilePage() {
       <div className={styles.container}>
         <div className={styles.card}>
           
-          {/* --- Bagian Header Profil --- */}
+          {/* --- Header Profil --- */}
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <div className={styles.profilePicWrapper}>
-              {/* Gambar Profil Placeholder */}
               <img
                 src="https://via.placeholder.com/100" 
                 alt="Profile"
@@ -91,12 +91,10 @@ export default function ProfilePage() {
               />
               <label htmlFor="profile-upload" className={styles.profilePicOverlay}>
                 <i className="bi bi-pencil-fill fs-4"></i>
-                {/* Fitur upload file gambar belum diaktifkan */}
-                <input type="file" id="profile-upload" className="d-none" disabled />
+                <input type="file" id="profile-upload" className="d-none" style={{ display: 'none' }} />
               </label>
             </div>
 
-            {/* Nama & Email diambil Dinamis dari Database */}
             <h2 className={styles.title} style={{ marginBottom: '0.5rem' }}>
               {profile?.namaLengkap || "User"}
             </h2>
@@ -126,7 +124,7 @@ export default function ProfilePage() {
 
           <hr style={{ margin: '2rem 0', borderColor: '#eee' }} />
 
-          {/* --- Feedback Alert (Muncul saat sukses/gagal update) --- */}
+          {/* --- Feedback Alert --- */}
           {feedback.message && (
             <div className={`${styles.alert} ${feedback.type === 'success' ? styles.alertSuccess : styles.alertError}`}>
               <span>{feedback.message}</span>
@@ -137,7 +135,6 @@ export default function ProfilePage() {
           <div className={styles.section}>
             <h3 className={styles.sectionTitle}>Manage Account</h3>
             
-            {/* Form Ganti Nama */}
             <form onSubmit={handleSaveName} className={styles.formGroup}>
               <label htmlFor="namaLengkap" className={styles.label}>Change Name</label>
               <input
@@ -157,7 +154,6 @@ export default function ProfilePage() {
               </div>
             </form>
 
-            {/* Form Ganti Password */}
             <form onSubmit={handleSavePassword} className={styles.formGroup} style={{ marginTop: '2rem' }}>
               <label htmlFor="newPassword" className={styles.label}>Change Password</label>
               <input
@@ -184,30 +180,39 @@ export default function ProfilePage() {
           <div>
             <h3 className={styles.sectionTitle}>Comment History</h3>
             
-            <div className={styles.commentCard}>
-              <p style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>
-                "This is an insightful article. I really appreciate the depth of the analysis..."
-              </p>
-              <Link href="#" style={{ color: '#333', fontSize: '0.9rem', textDecoration: 'none' }}>
-                on "The Future of Artificial Intelligence"
-              </Link>
-              <div className={styles.commentHeader}>
-                <span>2 days ago</span>
-                <div>
-                   <button style={{ background:'none', border:'none', cursor:'pointer', marginRight:'10px' }}>
-                     <i className="bi bi-pencil-fill"></i>
-                   </button>
-                   <button style={{ background:'none', border:'none', cursor:'pointer', color:'#dc3545' }}>
-                     <i className="bi bi-trash-fill"></i>
-                   </button>
-                </div>
+            {commentsLoading ? (
+              <div className="text-center py-3">
+                <div className="spinner-border spinner-border-sm text-primary" role="status"></div>
+                <span className="ms-2 text-muted">Memuat komentar...</span>
               </div>
-            </div>
-            
-            <p className="text-muted small fst-italic mt-3">
-              *Fitur riwayat komentar sedang dalam pengembangan.
-            </p>
-
+            ) : comments.length === 0 ? (
+              <div className="alert alert-secondary text-center small">
+                Belum ada riwayat komentar.
+              </div>
+            ) : (
+              <div className="d-flex flex-column gap-3">
+                {comments.map((comment) => (
+                  <div key={comment.id} className={styles.commentCard}>
+                    <p style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>
+                      "{comment.content}"
+                    </p>
+                    <Link 
+                      href={`/artikel/${comment.article.slug}`} 
+                      style={{ color: '#333', fontSize: '0.9rem', textDecoration: 'none', fontWeight: 'bold' }}
+                    >
+                      on "{comment.article.title}"
+                    </Link>
+                    <div className={styles.commentHeader}>
+                      <span>
+                        {new Date(comment.createdAt).toLocaleDateString('id-ID', {
+                          day: 'numeric', month: 'long', year: 'numeric'
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
         </div>
