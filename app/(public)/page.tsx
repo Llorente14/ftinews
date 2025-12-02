@@ -6,11 +6,13 @@ import { useCategories } from "@/hooks/useCategories";
 import { useSubscribe } from "@/hooks/useSubscribe";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Footer from "@/components/layout/Footer";
 import styles from "./homepage.module.css";
 
 export default function HomePage() {
+    const router = useRouter();
     const { data: session } = useSession();
     const { articles, fetchArticles, isLoading } = useArticles({
         perPage: 10,
@@ -324,17 +326,20 @@ export default function HomePage() {
                                             }
                                         )}
                                         |{" "}
-                                        {featuredArticle.author ? (
-                                            <Link
-                                                href={`/penulis/${featuredArticle.author.id}`}
-                                                className={styles.featuredAuthorLink}
-                                                onClick={(e) => e.stopPropagation()}
-                                            >
-                                                {featuredArticle.author.namaLengkap}
-                                            </Link>
-                                        ) : (
-                                            "Anonim"
-                                        )}
+                                        {featuredArticle.author
+                                            ? (
+                                                <button
+                                                    type="button"
+                                                    className={styles.featuredAuthorLink}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/penulis/${featuredArticle.author!.id}`);
+                                                    }}
+                                                >
+                                                    {featuredArticle.author.namaLengkap}
+                                                </button>
+                                            )
+                                            : "Anonim"}
                                     </p>
                                     <h3 className={styles.featuredTitle}>
                                         {featuredArticle.title}
@@ -556,17 +561,20 @@ export default function HomePage() {
                                                 <div className={styles.highlightCardMeta}>
                                                     <span className={styles.highlightCardAuthor}>
                                                         By{" "}
-                                                        {article.author ? (
-                                                            <Link
-                                                                href={`/penulis/${article.author.id}`}
-                                                                className={styles.highlightCardAuthorLink}
-                                                                onClick={(e) => e.stopPropagation()}
-                                                            >
-                                                                {article.author.namaLengkap}
-                                                            </Link>
-                                                        ) : (
-                                                            "Admin"
-                                                        )}
+                                                        {article.author
+                                                            ? (
+                                                                <button
+                                                                    type="button"
+                                                                    className={styles.highlightCardAuthorLink}
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        router.push(`/penulis/${article.author!.id}`);
+                                                                    }}
+                                                                >
+                                                                    {article.author.namaLengkap}
+                                                                </button>
+                                                            )
+                                                            : "Admin"}
                                                     </span>
                                                     <span className={styles.highlightCardDot}>•</span>
                                                     <span className={styles.highlightCardDate}>
@@ -716,26 +724,35 @@ export default function HomePage() {
                                     <h4 className={styles.sponsoredCardTitle}>{article.title}</h4>
                                     <div className={styles.sponsoredCardMeta}>
                                         <div className={styles.sponsoredCardAuthor}>
-                                            <Link
-                                                href={`/profile/${article?.author?.id}`}
+                                            <button
+                                                type="button"
                                                 className={styles.sponsoredCardAvatar}
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    if (article.author?.id) {
+                                                        router.push(`/profile/${article.author.id}`);
+                                                    }
+                                                }}
                                             >
                                                 {article.author?.namaLengkap?.[0]?.toUpperCase() || "A"}
-                                            </Link>
+                                            </button>
                                             <div className={styles.sponsoredCardAuthorInfo}>
                                                 <span className={styles.sponsoredCardAuthorName}>
                                                     By{" "}
-                                                    {article.author ? (
-                                                        <Link
-                                                            href={`/penulis/${article.author.id}`}
-                                                            className={styles.sponsoredCardAuthorName}
-                                                            onClick={(e) => e.stopPropagation()}
-                                                        >
-                                                            {article.author.namaLengkap}
-                                                        </Link>
-                                                    ) : (
-                                                        "Anonim"
-                                                    )}
+                                                    {article.author
+                                                        ? (
+                                                            <button
+                                                                type="button"
+                                                                className={styles.sponsoredCardAuthorName}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    router.push(`/penulis/${article.author!.id}`);
+                                                                }}
+                                                            >
+                                                                {article.author.namaLengkap}
+                                                            </button>
+                                                        )
+                                                        : "Anonim"}
                                                 </span>
                                                 <span className={styles.sponsoredCardDate}>
                                                     {new Date(article.publishedAt).toLocaleDateString(

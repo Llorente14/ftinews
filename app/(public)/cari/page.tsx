@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -11,52 +11,27 @@ import {
     InputGroup,
     Button,
     Stack,
-} from 'react-bootstrap';
+} from "react-bootstrap";
+
+import { useArticles } from "../../../hooks/useArticles";
 
 // Impor CSS kustom
-import './cari.css';
+import "./cari.css";
 
-type StaticArticle = {
+type ArticleListItem = {
     id: string;
     slug: string;
     title: string;
     description: string;
-    imageUrl: string;
-    category: string;
+    imageUrl: string | null;
+    category: string | null;
     publishedAt: string;
 };
 
-const staticArticles: StaticArticle[] = [
-    {
-        id: '1',
-        slug: 'global-summit-addresses-climate-change',
-        title: 'Global Summit Addresses Climate Change',
-        description: 'Leaders from around the world gathered to discuss urgent measures to combat the growing climate crisis.',
-        imageUrl: '/images/placeholder-globe.png',
-        category: 'World',
-        publishedAt: 'Oct 26, 2023',
-    },
-    {
-        id: '2',
-        slug: 'new-healthcare-bill-passes-senate',
-        title: 'New Healthcare Bill Passes Senate',
-        description: 'A landmark healthcare bill narrowly passed the Senate after weeks of heated debate. The legislation aims to expand coverage.',
-        imageUrl: '/images/placeholder-senate.png',
-        category: 'National',
-        publishedAt: 'Oct 25, 2023',
-    },
-    {
-        id: '3',
-        slug: 'economic-policy-shifts-focus',
-        title: 'Economic Policy Shifts Focus to Inflation Control',
-        description: 'Facing rising inflation, central banks are adjusting their economic policies. The move is expected to impact interest rates.',
-        imageUrl: '/images/placeholder-economy.png',
-        category: 'Economy',
-        publishedAt: 'Oct 24, 2023',
-    },
-];
+function ArticleResultItem({ article }: { article: ArticleListItem }) {
+    const imageSrc = article.imageUrl || "/images/placeholder-globe.png";
+    const category = article.category || "General";
 
-function ArticleResultItem({ article }: { article: StaticArticle }) {
     return (
         <Link href={`/artikel/${article.slug}`} passHref className="article-item-link">
             <div className="article-item">
@@ -65,7 +40,7 @@ function ArticleResultItem({ article }: { article: StaticArticle }) {
                     <Col xs={12} sm>
                         <Stack gap={2}>
                             <div className="article-meta">
-                                {article.category} <span className="text-muted mx-1">•</span> {article.publishedAt}
+                                {category} <span className="text-muted mx-1">•</span> {article.publishedAt}
                             </div>
                             <h5 className="article-title">{article.title}</h5>
                             <p className="article-description d-none d-sm-block">
@@ -78,7 +53,7 @@ function ArticleResultItem({ article }: { article: StaticArticle }) {
                     <Col xs={12} sm="auto">
                         <div className="article-image-wrapper">
                             <Image
-                                src={article.imageUrl}
+                                src={imageSrc}
                                 alt={article.title}
                                 width={208}
                                 height={144}
@@ -94,31 +69,117 @@ function ArticleResultItem({ article }: { article: StaticArticle }) {
 
 function SearchPage() {
     const [searchTerm, setSearchTerm] = useState("Politics");
+    const [page, setPage] = useState(1);
+
+    const { articles, meta, fetchArticles, isLoading, error } = useArticles();
+
+    useEffect(() => {
+        // Fetch initial articles on mount with default search term & page
+        fetchArticles({ page: 1, search: searchTerm }).catch(() => {
+            // error state is already handled in hook
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        alert(`Mencari untuk: ${searchTerm}`);
+        const newPage = 1;
+        setPage(newPage);
+        fetchArticles({ page: newPage, search: searchTerm }).catch(() => {
+            // error state is already handled in hook
+        });
     };
 
     const handleClearSearch = () => {
         setSearchTerm('');
+        const newPage = 1;
+        setPage(newPage);
+        fetchArticles({ page: newPage, search: "" }).catch(() => {
+            // error state is already handled in hook
+        });
     };
 
     const renderPagination = () => {
+        const currentPage = meta?.page ?? page;
+        const totalPages = meta?.totalPages ?? 1;
+
+        if (!meta || totalPages <= 1) {
+            return null;
+        }
+
+        const canGoPrev = meta.hasPrevPage && currentPage > 1;
+        const canGoNext = meta.hasNextPage && currentPage < totalPages;
+
+        const handlePageChange = (newPage: number) => {
+            if (newPage === currentPage || newPage < 1 || newPage > totalPages) return;
+            setPage(newPage);
+            fetchArticles({ page: newPage, search: searchTerm }).catch(() => {
+                // error state is already handled in hook
+            });
+        };
+
+        const renderPageNumbers = () => {
+            const buttons: React.ReactNode[] = [];
+
+            if (totalPages <= 5) {
+                for (let p = 1; p <= totalPages; p++) {
+                    buttons.push(
+                        <button
+                            key={p}
+                            className={`pagination-button pagination-number-button ${p === currentPage ? "active" : ""}`}
+                            onClick={() => handlePageChange(p)}
+                        >
+                            {p}
+                        </button>
+                    );
+                }
+            } else {
+                const pagesToShow = [1, 2, 3, totalPages];
+
+                pagesToShow.forEach((p, idx) => {
+                    if (idx === 3) {
+                        buttons.push(
+                            <span key="ellipsis" className="pagination-ellipsis">
+                                ...
+                            </span>
+                        );
+                    }
+
+                    buttons.push(
+                        <button
+                            key={p}
+                            className={`pagination-button pagination-number-button ${p === currentPage ? "active" : ""}`}
+                            onClick={() => handlePageChange(p)}
+                        >
+                            {p}
+                        </button>
+                    );
+                });
+            }
+
+            return buttons;
+        };
+
         return (
             <nav className="pagination-nav">
-                <Button variant="link" className="pagination-button" disabled>
+                <Button
+                    variant="link"
+                    className="pagination-button"
+                    disabled={!canGoPrev}
+                    onClick={() => canGoPrev && handlePageChange(currentPage - 1)}
+                >
                     <span className="material-symbols-outlined pagination-arrow">arrow_back</span>
                     Prev
                 </Button>
 
-                <button className="pagination-button pagination-number-button active">1</button>
-                <button className="pagination-button pagination-number-button">2</button>
-                <button className="pagination-button pagination-number-button">3</button>
-                <span className="pagination-ellipsis">...</span>
-                <button className="pagination-button pagination-number-button">8</button>
+                {renderPageNumbers()}
 
-                <Button variant="link" className="pagination-button">
+                <Button
+                    variant="link"
+                    className="pagination-button"
+                    disabled={!canGoNext}
+                    onClick={() => canGoNext && handlePageChange(currentPage + 1)}
+                >
                     Next
                     <span className="material-symbols-outlined pagination-arrow">arrow_forward</span>
                 </Button>
@@ -139,7 +200,11 @@ function SearchPage() {
                                     Search results for: <span className="text-primary">"{searchTerm}"</span>
                                 </h1>
                                 <p className="text-muted mb-4">
-                                    Showing 12 results found
+                                    {meta
+                                        ? `Showing ${meta.total} results found`
+                                        : isLoading
+                                            ? "Loading results..."
+                                            : "Showing 0 results found"}
                                 </p>
 
                                 <Form onSubmit={handleSubmit}>
@@ -165,11 +230,38 @@ function SearchPage() {
 
                             {/* --- Konten List Artikel --- */}
                             <div>
-                                <Stack gap={3}>
-                                    {staticArticles.map((article) => (
-                                        <ArticleResultItem key={article.id} article={article} />
-                                    ))}
-                                </Stack>
+                                {isLoading && (
+                                    <p className="text-muted">Loading articles...</p>
+                                )}
+
+                                {!isLoading && error && (
+                                    <p className="text-danger">Terjadi kesalahan: {error}</p>
+                                )}
+
+                                {!isLoading && !error && articles.length === 0 && (
+                                    <p className="text-muted">
+                                        Tidak ada hasil untuk &quot;{searchTerm}&quot;
+                                    </p>
+                                )}
+
+                                {!isLoading && !error && articles.length > 0 && (
+                                    <Stack gap={3}>
+                                        {articles.map((article) => (
+                                            <ArticleResultItem
+                                                key={article.id}
+                                                article={{
+                                                    id: article.id,
+                                                    slug: article.slug,
+                                                    title: article.title,
+                                                    description: article.description,
+                                                    imageUrl: article.imageUrl,
+                                                    category: article.category,
+                                                    publishedAt: article.publishedAt,
+                                                }}
+                                            />
+                                        ))}
+                                    </Stack>
+                                )}
                             </div>
 
                             {/* --- Pagination --- */}
