@@ -213,7 +213,7 @@ function SearchPage() {
                                             <span className="material-symbols-outlined">search</span>
                                         </InputGroup.Text>
                                         <Form.Control
-                                            type="search"
+                                            type="text"
                                             placeholder="Search articles, topics, or authors..."
                                             className="search-input"
                                             value={searchTerm}
