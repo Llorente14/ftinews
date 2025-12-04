@@ -18,24 +18,24 @@
 }
 
 .search-input-group {
-    border-radius: 1rem;
-    /* Lebih bulat */
+    border-radius: 999px;
+    /* Sangat bulat (pill) */
     background-color: #ffffff;
     /* Putih bersih */
     border: 1px solid #e2e8f0;
     /* Border tipis */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    /* Soft shadow */
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06);
+    /* Soft shadow ringan */
     transition: all 0.3s ease;
     overflow: hidden;
     padding: 0.25rem;
 }
 
 .search-input-group:focus-within {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    border-color: #141414;
-    /* Border hitam saat aktif */
-    transform: translateY(-1px);
+    box-shadow: 0 0 0 1px #3b82f6;
+    border-color: #3b82f6;
+    /* Border biru saat aktif */
+    transform: none;
 }
 
 .search-icon {

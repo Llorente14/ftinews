@@ -70,12 +70,13 @@ function ArticleResultItem({ article }: { article: ArticleListItem }) {
 function SearchPage() {
     const [searchTerm, setSearchTerm] = useState("Politics");
     const [page, setPage] = useState(1);
+    const RESULTS_PER_PAGE = 6;
 
     const { articles, meta, fetchArticles, isLoading, error } = useArticles();
 
     useEffect(() => {
         // Fetch initial articles on mount with default search term & page
-        fetchArticles({ page: 1, search: searchTerm }).catch(() => {
+        fetchArticles({ page: 1, perPage: RESULTS_PER_PAGE, search: searchTerm }).catch(() => {
             // error state is already handled in hook
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -85,7 +86,7 @@ function SearchPage() {
         e.preventDefault();
         const newPage = 1;
         setPage(newPage);
-        fetchArticles({ page: newPage, search: searchTerm }).catch(() => {
+        fetchArticles({ page: newPage, perPage: RESULTS_PER_PAGE, search: searchTerm }).catch(() => {
             // error state is already handled in hook
         });
     };
@@ -94,7 +95,7 @@ function SearchPage() {
         setSearchTerm('');
         const newPage = 1;
         setPage(newPage);
-        fetchArticles({ page: newPage, search: "" }).catch(() => {
+        fetchArticles({ page: newPage, perPage: RESULTS_PER_PAGE, search: "" }).catch(() => {
             // error state is already handled in hook
         });
     };
@@ -113,7 +114,7 @@ function SearchPage() {
         const handlePageChange = (newPage: number) => {
             if (newPage === currentPage || newPage < 1 || newPage > totalPages) return;
             setPage(newPage);
-            fetchArticles({ page: newPage, search: searchTerm }).catch(() => {
+            fetchArticles({ page: newPage, perPage: RESULTS_PER_PAGE, search: searchTerm }).catch(() => {
                 // error state is already handled in hook
             });
         };
