@@ -223,7 +223,15 @@ function SearchPage() {
 
   return (
     <>
-      <HomeHeader session={null} currentPath={"/cari"} currentDate={""} />
+      <HomeHeader
+        currentPath={"/cari"}
+        currentDate={new Date().toLocaleDateString("id-ID", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+      />
       <div
         style={{
           backgroundColor: "#f8fafc",

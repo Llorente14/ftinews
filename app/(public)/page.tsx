@@ -230,11 +230,7 @@ export default function HomePage() {
   return (
     <div className={styles.container}>
       {/* Header */}
-      <HomeHeader
-        session={session ?? null}
-        currentPath={pathname}
-        currentDate={currentDate}
-      />
+      <HomeHeader currentPath={pathname} currentDate={currentDate} />
 
       <main className={styles.main}>
         {/* Breaking News */}

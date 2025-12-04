@@ -167,11 +167,7 @@ const BookmarkPage: React.FC = () => {
 
   return (
     <>
-      <HomeHeader
-        session={session}
-        currentPath={currentPath}
-        currentDate={currentDate}
-      />
+      <HomeHeader currentPath={currentPath} currentDate={currentDate} />
       <div className={styles.container}>
         <div className={styles.header}>
           <div>

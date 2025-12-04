@@ -19,16 +19,11 @@ const getCurrentDate = () => {
 const currentDate = getCurrentDate();
 
 const AboutUsPage: React.FC = () => {
-  const { data: session } = useSession();
   const currentPath = usePathname();
 
   return (
     <>
-      <HomeHeader
-        session={session}
-        currentPath={currentPath}
-        currentDate={currentDate}
-      />
+      <HomeHeader currentPath={currentPath} currentDate={currentDate} />
       
       <main className={styles.mainContainer}>
         <div className={styles.headerSection}>

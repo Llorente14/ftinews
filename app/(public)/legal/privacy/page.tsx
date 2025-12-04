@@ -6,14 +6,18 @@ import Footer from "@/components/layout/Footer";
 
 import "./privacy.css";
 import HomeHeader from "@/components/home/HomeHeader";
+
+const currentDate = new Date().toLocaleDateString("id-ID", {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
 function PrivacyPage() {
   return (
     <>
-      <HomeHeader
-        session={null}
-        currentPath={"/legal/privacy"}
-        currentDate={""}
-      />
+      <HomeHeader currentPath={"/legal/privacy"} currentDate={currentDate} />
       <div className="privacy-page">
         <header className="privacy-hero">
           <div className="privacy-hero-inner">

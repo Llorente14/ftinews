@@ -1,22 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import type { Session } from "next-auth";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useCategories } from "@/hooks/useCategories";
 import styles from "@/app/(public)/homepage.module.css";
 
 type HomeHeaderProps = {
-  session: Session | null;
   currentPath: string;
   currentDate: string;
 };
 
 export default function HomeHeader({
-  session,
   currentPath,
   currentDate,
 }: HomeHeaderProps) {
+  const { data: session } = useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const { categories } = useCategories();

@@ -7,14 +7,17 @@ import Footer from "@/components/layout/Footer";
 import "./terms.css";
 import HomeHeader from "@/components/home/HomeHeader";
 
+const currentDate = new Date().toLocaleDateString("id-ID", {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
 function TermsPage() {
   return (
     <>
-      <HomeHeader
-        session={null}
-        currentPath={"/legal/terms"}
-        currentDate={""}
-      />
+      <HomeHeader currentPath={"/legal/terms"} currentDate={currentDate} />
       <div className="terms-page">
         <header className="terms-hero">
           <div className="terms-hero-inner">
