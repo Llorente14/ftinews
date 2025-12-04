@@ -228,3 +228,37 @@ export async function PATCH(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  const session = await getSession(request);
+  if (!session) return unauthenticated();
+
+  try {
+    const userExists = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    });
+
+    if (!userExists) {
+      return NextResponse.json(
+        { status: "error", message: "User tidak ditemukan." },
+        { status: 404 }
+      );
+    }
+
+    // Hapus user dari database
+    await prisma.user.delete({
+      where: { id: session.user.id },
+    });
+
+    return NextResponse.json({
+      status: "success",
+      message: "Akun berhasil dihapus.",
+    });
+  } catch (error) {
+    console.error("Profile DELETE error:", error);
+    return NextResponse.json(
+      { status: "error", message: "Terjadi kesalahan saat menghapus akun." },
+      { status: 500 }
+    );
+  }
+}

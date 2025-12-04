@@ -194,6 +194,27 @@
   color: #888;
 }
 
+.btnDelete {
+  width: 100%;
+  padding: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #dc3545; /* Merah Bootstrap */
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btnDelete:hover {
+  background-color: #bb2d3b; /* Merah lebih gelap saat hover */
+  border-color: #b02a37;
+}
+
 /* Alerts */
 .alert {
   padding: 1rem;
