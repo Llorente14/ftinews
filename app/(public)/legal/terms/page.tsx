@@ -2,11 +2,15 @@
 
 import React from "react";
 import Link from "next/link";
+import Footer from "@/components/layout/Footer";
+import PublicHeader from "@/components/layout/PublicHeader";
 
 import "./terms.css";
 
 function TermsPage() {
   return (
+    <>
+    <PublicHeader />
     <div className="terms-page">
       <header className="terms-hero">
         <div className="terms-hero-inner">
@@ -171,6 +175,8 @@ function TermsPage() {
         </footer>
       </main>
     </div>
+    <Footer />
+    </>
   );
 }
 

@@ -2,11 +2,15 @@
 
 import React from "react";
 import Link from "next/link";
+import Footer from "@/components/layout/Footer";
+import PublicHeader from "@/components/layout/PublicHeader";
 
 import "./privacy.css";
 
 function PrivacyPage() {
   return (
+    <>
+    <PublicHeader />
     <div className="privacy-page">
       <header className="privacy-hero">
         <div className="privacy-hero-inner">
@@ -180,6 +184,8 @@ function PrivacyPage() {
         </footer>
       </main>
     </div>
+    <Footer />
+    </>
   );
 }
 
