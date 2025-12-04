@@ -196,10 +196,8 @@
   }
 
   .navLinkSlider {
-    left: 0;
-    right: 0;
-    bottom: -1px;
-    height: 5px;
+    bottom: -1px; /* Sesuaikan dengan border-bottom */
+    height: 3px; /* Lebih tebal untuk mobile */
   }
 }
 
@@ -231,9 +229,9 @@
 .navLinkSlider {
   position: absolute;
   bottom: 0;
-  left: -8px;
-  right: -8px;
-  height: 4px;
+  left: 0;
+  right: 0;
+  height: 3px;
   background-color: #1a4d8c;
   border-radius: 2px 2px 0 0;
   animation: slideIn 0.3s ease;
@@ -279,9 +277,9 @@
 .categoryLinkSlider {
   position: absolute;
   bottom: 0;
-  left: -6px;
-  right: -6px;
-  height: 4px;
+  left: 0;
+  right: 0;
+  height: 2px;
   background-color: #1a4d8c;
   border-radius: 2px 2px 0 0;
   animation: slideIn 0.3s ease;
@@ -929,7 +927,6 @@
 }
 
 .sponsoredCard {
-  position: relative;
   background-color: #ffffff;
   border-radius: 8px;
   overflow: hidden;
@@ -1291,7 +1288,6 @@
 }
 
 .highlightCard {
-  position: relative;
   background-color: #ffffff;
   border-radius: 8px;
   overflow: hidden;
@@ -1317,12 +1313,9 @@
 /* Bookmark Button */
 /* Base Bookmark Button */
 .bookmarkButton {
-  position: absolute;
-  top: 12px;
-  right: 12px;
   border-radius: 50%;
   border: 2px solid #141414;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: transparent;
   color: #141414;
   display: flex;
   align-items: center;
@@ -1330,12 +1323,12 @@
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 0;
-  z-index: 5;
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .bookmarkButton:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  transform: scale(1.1);
 }
 
 .bookmarkButton:active {
@@ -1358,25 +1351,27 @@
   border-color: #ffed4e;
 }
 
+/* Highlight Card Bookmark Button - Larger */
 .bookmarkButtonHighlight {
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
 }
 
 .bookmarkButtonHighlight i {
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1;
 }
 
+/* Sponsored Card Bookmark Button - Smaller */
 .bookmarkButtonSponsored {
-  width: 32px;
-  height: 32px;
-  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  font-size: 14px;
 }
 
 .bookmarkButtonSponsored i {
-  font-size: 16px;
+  font-size: 14px;
   line-height: 1;
 }
 

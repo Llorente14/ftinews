@@ -712,23 +712,6 @@ export default function HomePage() {
                         href={`/artikel/${article.slug}`}
                         className={styles.highlightCard}
                       >
-                        <button
-                          type="button"
-                          className={`${styles.bookmarkButton} ${
-                            styles.bookmarkButtonHighlight
-                          } ${isBookmarked ? styles.bookmarkButtonActive : ""}`}
-                          onClick={(e) => handleBookmarkToggle(e, article.id)}
-                          aria-label={
-                            isBookmarked ? "Hapus bookmark" : "Tambah bookmark"
-                          }
-                          disabled={isAddingBookmark || isDeletingBookmark}
-                        >
-                          <i
-                            className={`bx ${
-                              isBookmarked ? "bxs-bookmark" : "bx-bookmark"
-                            }`}
-                          ></i>
-                        </button>
                         <div className={styles.highlightCardImageWrapper}>
                           <Image
                             src={article.imageUrl || "/placeholder.jpg"}
@@ -772,6 +755,28 @@ export default function HomePage() {
                                 }
                               )}
                             </span>
+                            <button
+                              className={`${styles.bookmarkButton} ${
+                                styles.bookmarkButtonHighlight
+                              } ${
+                                isBookmarked ? styles.bookmarkButtonActive : ""
+                              }`}
+                              onClick={(e) =>
+                                handleBookmarkToggle(e, article.id)
+                              }
+                              aria-label={
+                                isBookmarked
+                                  ? "Hapus bookmark"
+                                  : "Tambah bookmark"
+                              }
+                              disabled={isAddingBookmark || isDeletingBookmark}
+                            >
+                              <i
+                                className={`bx ${
+                                  isBookmarked ? "bxs-bookmark" : "bx-bookmark"
+                                }`}
+                              ></i>
+                            </button>
                           </div>
                           <p className={styles.highlightCardDescription}>
                             {article.description}
@@ -895,23 +900,6 @@ export default function HomePage() {
                   href={`/artikel/${article.slug}`}
                   className={styles.sponsoredCard}
                 >
-                  <button
-                    type="button"
-                    className={`${styles.bookmarkButton} ${
-                      styles.bookmarkButtonSponsored
-                    } ${isBookmarked ? styles.bookmarkButtonActive : ""}`}
-                    onClick={(e) => handleBookmarkToggle(e, article.id)}
-                    aria-label={
-                      isBookmarked ? "Hapus bookmark" : "Tambah bookmark"
-                    }
-                    disabled={isAddingBookmark || isDeletingBookmark}
-                  >
-                    <i
-                      className={`bx ${
-                        isBookmarked ? "bxs-bookmark" : "bx-bookmark"
-                      }`}
-                    ></i>
-                  </button>
                   <div className={styles.sponsoredCardImageWrapper}>
                     <Image
                       src={article.imageUrl || "/placeholder.jpg"}
@@ -964,6 +952,22 @@ export default function HomePage() {
                             )}
                           </span>
                         </div>
+                        <button
+                          className={`${styles.bookmarkButton} ${
+                            styles.bookmarkButtonSponsored
+                          } ${isBookmarked ? styles.bookmarkButtonActive : ""}`}
+                          onClick={(e) => handleBookmarkToggle(e, article.id)}
+                          aria-label={
+                            isBookmarked ? "Hapus bookmark" : "Tambah bookmark"
+                          }
+                          disabled={isAddingBookmark || isDeletingBookmark}
+                        >
+                          <i
+                            className={`bx ${
+                              isBookmarked ? "bxs-bookmark" : "bx-bookmark"
+                            }`}
+                          ></i>
+                        </button>
                       </div>
                     </div>
                   </div>
