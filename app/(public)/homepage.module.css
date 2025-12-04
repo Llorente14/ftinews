@@ -195,6 +195,20 @@
         padding: 8px 0;
         border-bottom: 1px solid #e5e5e5;
     }
+
+    .navLink,
+    .navLinkActive {
+        width: 100%;
+        padding: 8px 0;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .navLinkSlider {
+        bottom: -1px;
+        /* Sesuaikan dengan border-bottom */
+        height: 3px;
+        /* Lebih tebal untuk mobile */
+    }
 }
 
 .navLink,
@@ -202,6 +216,12 @@
     font-size: 14px;
     text-decoration: none;
     transition: color 0.2s;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 4px;
 }
 
 .navLink {
@@ -216,6 +236,148 @@
 .navLinkActive {
     font-weight: 600;
     color: #141414;
+    font-weight: 500;
+    /* Tidak bold, hanya warna yang berbeda */
+    color: #141414;
+}
+
+/* Slider indicator di bawah link active */
+.navLinkSlider {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #1a4d8c;
+    border-radius: 2px 2px 0 0;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+/* Category Links - Desktop */
+.categoryLinks {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.categoryLink {
+    font-size: 14px;
+    font-weight: 500;
+    color: #666666;
+    text-decoration: none;
+    transition: color 0.2s;
+    white-space: nowrap;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 4px;
+}
+
+.categoryLink:hover {
+    color: #141414;
+}
+
+.categoryLinkActive {
+    color: #141414;
+}
+
+.categoryLinkSlider {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #1a4d8c;
+    border-radius: 2px 2px 0 0;
+    animation: slideIn 0.3s ease;
+}
+
+/* Category Dropdown - Mobile */
+.categoryDropdown {
+    display: none;
+    position: relative;
+    width: 100%;
+}
+
+.categoryDropdownButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 0;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #e5e5e5;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666666;
+    cursor: pointer;
+    text-align: left;
+    transition: color 0.2s;
+}
+
+.categoryDropdownButton:hover {
+    color: #141414;
+}
+
+.categoryDropdownButton i {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.categoryDropdownButton .chevronOpen {
+    transform: rotate(180deg);
+}
+
+.categoryDropdownContent {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 8px 0;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.categoryDropdownItem {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666666;
+    text-decoration: none;
+    transition: color 0.2s, background-color 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.categoryDropdownItem:hover {
+    color: #141414;
+    background-color: #f0f0f0;
+    border-left-color: #4a90e2;
+}
+
+@media (max-width: 768px) {
+    .categoryLinks {
+        display: none;
+    }
+
+    .categoryDropdown {
+        display: block;
+    }
+}
+
+@media (min-width: 769px) {
+    .categoryDropdown {
+        display: none;
+    }
 }
 
 .viewAllLink {
@@ -851,6 +1013,13 @@
     font-size: 12px;
     color: #666666;
     margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #666666;
+    margin-top: auto;
+    position: relative;
 }
 
 .sponsoredCardAuthor {
@@ -1161,6 +1330,71 @@
     overflow: hidden;
 }
 
+/* Bookmark Button */
+/* Base Bookmark Button */
+.bookmarkButton {
+    border-radius: 50%;
+    border: 2px solid #141414;
+    background-color: transparent;
+    color: #141414;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.bookmarkButton:hover {
+    transform: scale(1.1);
+}
+
+.bookmarkButton:active {
+    transform: scale(0.95);
+}
+
+.bookmarkButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.bookmarkButtonActive {
+    background-color: #ffd700;
+    border-color: #ffd700;
+    color: #ffffff;
+}
+
+.bookmarkButtonActive:hover {
+    background-color: #ffed4e;
+    border-color: #ffed4e;
+}
+
+/* Highlight Card Bookmark Button - Larger */
+.bookmarkButtonHighlight {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+}
+
+.bookmarkButtonHighlight i {
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Sponsored Card Bookmark Button - Smaller */
+.bookmarkButtonSponsored {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+}
+
+.bookmarkButtonSponsored i {
+    font-size: 14px;
+    line-height: 1;
+}
+
 .highlightCardImage {
     width: 100%;
     height: 100%;
@@ -1207,6 +1441,13 @@
     font-size: 12px;
     color: #666666;
     margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #666666;
+    margin-bottom: 12px;
+    position: relative;
 }
 
 .highlightCardAuthor {

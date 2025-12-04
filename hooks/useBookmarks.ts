@@ -72,7 +72,11 @@ export function useBookmarks() {
   }, []);
 
   useEffect(() => {
-    fetchBookmarks();
+    // Only fetch bookmarks if user is authenticated
+    // This will be handled by the component using the hook
+    fetchBookmarks().catch(() => {
+      // Silently fail if user is not authenticated
+    });
   }, [fetchBookmarks]);
 
   return { bookmarks, fetchBookmarks, isLoading, error };
@@ -127,7 +131,8 @@ export function useDeleteBookmark() {
         credentials: "include",
       });
 
-      const result: { status: "success" | "error"; message: string } = await res.json();
+      const result: { status: "success" | "error"; message: string } =
+        await res.json();
 
       if (!res.ok || result.status === "error") {
         throw new Error(result.message || "Gagal menghapus bookmark");
@@ -145,4 +150,3 @@ export function useDeleteBookmark() {
 
   return { deleteBookmark, isLoading, error };
 }
-

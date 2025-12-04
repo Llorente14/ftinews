@@ -6,7 +6,10 @@ import { commentInclude, serializeComment } from "../_helpers";
 function validateContent(content?: string) {
   const trimmed = content?.trim();
   if (!trimmed) {
-    return { ok: false, message: "Konten komentar tidak boleh kosong." } as const;
+    return {
+      ok: false,
+      message: "Konten komentar tidak boleh kosong.",
+    } as const;
   }
   if (trimmed.length > 2000) {
     return {
@@ -15,6 +18,41 @@ function validateContent(content?: string) {
     } as const;
   }
   return { ok: true, value: trimmed } as const;
+}
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    const comment = await prisma.comment.findUnique({
+      where: { id },
+      include: commentInclude, // Mengambil data relasi (author, article, dll)
+    });
+
+    if (!comment) {
+      return NextResponse.json(
+        { status: "error", message: "Komentar tidak ditemukan." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      status: "success",
+      data: { comment: serializeComment(comment) },
+    });
+  } catch (error) {
+    console.error("Comments GET error:", error);
+    return NextResponse.json(
+      {
+        status: "error",
+        message: "Terjadi kesalahan saat mengambil komentar.",
+      },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PATCH(
@@ -38,7 +76,10 @@ export async function PATCH(
 
   if (!comment || comment.userId !== session.user.id) {
     return NextResponse.json(
-      { status: "error", message: "Komentar tidak ditemukan atau bukan milik Anda." },
+      {
+        status: "error",
+        message: "Komentar tidak ditemukan atau bukan milik Anda.",
+      },
       { status: 404 }
     );
   }
@@ -106,7 +147,10 @@ export async function DELETE(
 
   if (!isOwner && !isAdmin) {
     return NextResponse.json(
-      { status: "error", message: "Anda tidak memiliki izin untuk menghapus komentar ini." },
+      {
+        status: "error",
+        message: "Anda tidak memiliki izin untuk menghapus komentar ini.",
+      },
       { status: 403 }
     );
   }
