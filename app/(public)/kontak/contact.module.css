@@ -1,0 +1,359 @@
+/* --- Shared Layout Styles (Sama seperti Homepage) --- */
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f7f7f7;
+  color: #141414;
+}
+
+/* Header Styles */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: #f7f7f7;
+}
+
+.headerTop { background-color: #f5f5f5; }
+
+.headerTopContent {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerTopLeft, .headerTopRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logoLink { text-decoration: none; color: inherit; }
+.logo { font-size: 18px; font-weight: 700; margin: 0; }
+.date { font-size: 14px; color: #666666; }
+
+.headerLink {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666666;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.headerLink:hover { color: #141414; }
+
+.mobileMenuButton {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #666666;
+  cursor: pointer;
+}
+
+/* Nav Styles */
+.nav { border-bottom: 1px solid #e5e5e5; }
+.navContent {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 12px 16px;
+}
+.navLinks {
+  display: flex;
+  gap: 24px;
+}
+.navLink, .navLinkActive {
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.navLink { font-weight: 500; color: #666666; }
+.navLink:hover { color: #141414; }
+.navLinkActive { font-weight: 600; color: #141414; }
+.navDivider {
+  max-width: 960px;
+  margin: 0 auto;
+  height: 1px;
+  background-color: #e5e5e5;
+}
+
+/* --- Contact Page Specific Styles --- */
+
+.main {
+  flex: 1;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Page Header */
+.pageHeader {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.pageTitle {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1a4d8c; /* Menggunakan warna biru FTI News */
+  margin: 0 0 12px 0;
+}
+
+.pageSubtitle {
+  font-size: 16px;
+  color: #666666;
+  margin: 0 auto;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.titleUnderline {
+  width: 60px;
+  height: 4px;
+  background-color: #1a4d8c;
+  margin: 16px auto 0;
+  border-radius: 2px;
+}
+
+/* Content Grid */
+.contentGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 32px;
+}
+
+/* Cards Shared Style */
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e5e5;
+}
+
+.cardTitle {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  color: #141414;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Form Styles */
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #141414;
+}
+
+.input, .select, .textarea {
+  padding: 12px 16px;
+  border: 1px solid #d1d1d1;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background-color: #fbfbfb;
+}
+
+.input:focus, .select:focus, .textarea:focus {
+  border-color: #1a4d8c;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(26, 77, 140, 0.1);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.submitButton {
+  margin-top: 8px;
+  padding: 14px 24px;
+  background-color: #1a4d8c;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: #0d2d52;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
+}
+
+/* Sidebar Info Styles */
+.sidebarTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a4d8c;
+  margin: 0 0 20px 0;
+}
+
+.contactInfoList {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.contactItem {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.iconWrapper {
+  width: 40px;
+  height: 40px;
+  background-color: #e8f0fe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a4d8c;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.infoLabel {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: #141414;
+}
+
+.infoText {
+  font-size: 14px;
+  color: #666666;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.infoLink {
+  display: block;
+  font-size: 14px;
+  color: #1a4d8c;
+  text-decoration: none;
+  margin-bottom: 2px;
+}
+
+.infoLink:hover {
+  text-decoration: underline;
+}
+
+.marginTop {
+  margin-top: 24px;
+}
+
+.departmentList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.departmentItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.departmentItem:last-child {
+  border-bottom: none;
+}
+
+.departmentItem span {
+  color: #666666;
+}
+
+.departmentItem a {
+  color: #1a4d8c;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.departmentItem a:hover {
+  text-decoration: underline;
+}
+
+.alertSuccess {
+  background-color: #dcfce7;
+  color: #166534;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 20px;
+  border: 1px solid #bbf7d0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .headerTopContent {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .date { display: none; }
+  .mobileMenuButton { display: block; }
+
+  /* Nav Mobile Styles */
+  .nav {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  .nav.navOpen { max-height: 500px; }
+  .navContent { flex-direction: column; gap: 16px; }
+  .navLinks {
+    flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+  .navLink, .navLinkActive {
+    width: 100%;
+    padding: 8px 0;
+    border-bottom: 1px solid #e5e5e5;
+  }
+
+  /* Contact Page Responsive */
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebarSection {
+    order: -1; /* Menaruh info kontak di atas form pada mobile (opsional) */
+  }
+
+  .pageTitle { font-size: 24px; }
+}

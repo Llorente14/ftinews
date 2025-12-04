@@ -1,0 +1,197 @@
+/* Container Utama */
+.container {
+  min-height: 100vh;
+  background-color: #fff;
+  color: #333;
+}
+
+.main {
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+}
+
+/* --- LAYOUT SYSTEM (FLEXBOX) --- */
+.layoutGrid {
+  display: flex;
+  flex-direction: column; /* Mobile: Stack vertikal */
+  width: 100%;
+  gap: 3rem;
+}
+
+/* Kolom Artikel */
+.articleContainer {
+  width: 100%;
+  /* PENTING: min-width: 0 mencegah flex item 'menolak' mengecil yang bikin teks rusak */
+  min-width: 0; 
+  background: #fff;
+}
+
+/* --- SIDEBAR IKLAN (STICKY) --- */
+.adSidebarRight {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  margin-top: 0;
+}
+
+/* Kotak Iklan */
+.adBox {
+  background-color: #f4f4f4;
+  border: 1px solid #e0e0e0;
+  position: relative; /* Penting untuk Image fill */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  width: 300px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* Ukuran Iklan Raksasa 300x800 */
+.boxHuge {
+  height: 800px;
+}
+
+/* Wrapper Link Iklan */
+.adLinkWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Label Advertisement */
+.adLabel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  color: #666;
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  text-transform: uppercase;
+  z-index: 10;
+  border-bottom-left-radius: 4px;
+}
+
+/* --- DESKTOP VIEW (Layar > 1024px) --- */
+@media (min-width: 1024px) {
+  .layoutGrid {
+    flex-direction: row; /* Desktop: Sebelah-sebelahan */
+    align-items: flex-start; /* PENTING: Agar sticky berfungsi */
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .articleContainer {
+    flex: 1; /* Artikel mengambil sisa ruang */
+    margin-right: 4rem; /* Jarak antara artikel dan iklan */
+  }
+
+  .adSidebarRight {
+    width: 300px; /* Lebar Sidebar Fix */
+    flex-shrink: 0;
+    
+    /* --- FITUR STICKY --- */
+    position: sticky;
+    top: 100px; /* Jarak dari atas layar saat scroll */
+    height: fit-content;
+  }
+}
+
+/* --- STYLING KONTEN ARTIKEL --- */
+.breadcrumb { font-size: 0.85rem; color: #666; margin-bottom: 1.5rem; display: flex; flex-wrap: wrap; align-items: center; }
+.separator { margin: 0 0.5rem; color: #ccc; }
+.breadcrumb a { color: #666; text-decoration: none; }
+.breadcrumb a:hover { color: #000; text-decoration: underline; }
+.current { color: #000; font-weight: 500; }
+
+.header { margin-bottom: 2rem; }
+.metaTop { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; font-size: 0.8rem; }
+.categoryTag { color: #d93025; font-weight: 700; letter-spacing: 0.5px; }
+.date { color: #888; }
+
+.title { font-size: 2.25rem; line-height: 1.3; font-weight: 800; color: #1a1a1a; margin-bottom: 1rem; word-wrap: break-word; }
+.description { font-size: 1.15rem; line-height: 1.6; color: #555; margin-bottom: 1.5rem; }
+
+.authorSection { display: flex; align-items: center; padding-top: 1rem; border-top: 1px solid #eee; }
+.authorAvatar { width: 40px; height: 40px; background-color: #222; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; margin-right: 1rem; }
+.authorInfo { display: flex; flex-direction: column; }
+.authorLabel { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+.authorName { font-weight: 700; color: #000; text-decoration: none; font-size: 0.9rem; }
+
+.imageWrapper { position: relative; width: 100%; aspect-ratio: 16 / 9; margin: 2rem 0; border-radius: 8px; overflow: hidden; background-color: #f0f0f0; }
+
+.contentWrapper { margin-bottom: 3rem; }
+.content { font-family: 'Georgia', serif; font-size: 1.125rem; line-height: 1.8; color: #2c2c2c; word-wrap: break-word; overflow-wrap: break-word; }
+.content p { margin-bottom: 1.5rem; }
+.content h2 { font-family: sans-serif; font-size: 1.75rem; font-weight: 700; margin: 2rem 0 1rem 0; }
+.content h3 { font-family: sans-serif; font-size: 1.4rem; font-weight: 600; margin: 1.5rem 0 1rem 0; }
+.content ul, .content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; }
+.content li { margin-bottom: 0.5rem; }
+.content a { color: #d93025; text-decoration: underline; }
+.content img { max-width: 100%; height: auto; border-radius: 6px; margin: 1.5rem 0; }
+
+.footerActions { padding-top: 1.5rem; border-top: 1px solid #eee; margin-bottom: 1.5rem; }
+.stats { display: flex; gap: 1.5rem; color: #666; font-size: 0.9rem; }
+.stats i { margin-right: 0.25rem; font-size: 1.1rem; vertical-align: middle; }
+
+/* --- TAGS / CATEGORY LINK SECTION --- */
+.tagsSection { margin-bottom: 2rem; display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem; }
+.tagsLabel { font-weight: 700; color: #1a1a1a; font-size: 0.9rem; text-transform: uppercase; }
+.tagChip { display: inline-block; padding: 0.4rem 1rem; background-color: #f0f0f0; color: #333; border-radius: 20px; font-size: 0.85rem; font-weight: 500; text-decoration: none; transition: all 0.2s ease; border: 1px solid #e0e0e0; }
+.tagChip:hover { background-color: #d93025; color: #fff; border-color: #d93025; transform: translateY(-1px); }
+
+/* --- COMMENTS SECTION STYLES --- */
+.commentsSection { margin-top: 1rem; padding-top: 2rem; border-top: 1px solid #eee; margin-bottom: 4rem; }
+.commentsTitle { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; color: #1a1a1a; }
+.commentFormWrapper { margin-bottom: 2rem; }
+.commentForm { display: flex; gap: 1rem; }
+.commentUserAvatar { width: 40px; height: 40px; background-color: #d93025; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+.commentInputGroup { flex-grow: 1; }
+.commentTextarea { width: 100%; min-height: 80px; padding: 0.75rem; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; resize: vertical; margin-bottom: 0.5rem; }
+.commentTextarea:focus { outline: none; border-color: #d93025; }
+.commentSubmitBtn { background-color: #1a1a1a; color: white; border: none; padding: 0.5rem 1.25rem; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 0.9rem; float: right; }
+.commentSubmitBtn:disabled { background-color: #ccc; cursor: not-allowed; }
+.loginPrompt { background: #f9f9f9; padding: 1rem; text-align: center; border-radius: 6px; color: #666; }
+.loginPrompt a { color: #d93025; font-weight: 700; text-decoration: underline; }
+
+.commentsList { display: flex; flex-direction: column; gap: 1.5rem; }
+.commentItem { display: flex; gap: 1rem; }
+.commentAvatar { width: 36px; height: 36px; background-color: #eee; color: #555; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; flex-shrink: 0; }
+.commentContentWrapper { flex-grow: 1; }
+.commentHeader { display: flex; justify-content: space-between; margin-bottom: 0.25rem; }
+.commentAuthor { font-weight: 700; font-size: 0.95rem; color: #000; }
+.commentDate { font-size: 0.75rem; color: #999; }
+.commentText { font-size: 0.95rem; line-height: 1.5; color: #333; }
+.commentActions { margin-top: 0.5rem; display: flex; gap: 1rem; }
+.commentActions button { background: none; border: none; font-size: 0.75rem; color: #666; cursor: pointer; padding: 0; }
+.commentActions button:hover { text-decoration: underline; color: #d93025; }
+
+/* Edit & Pagination Styles */
+.editMode { margin-top: 0.5rem; }
+.editTextarea { width: 100%; min-height: 60px; padding: 0.5rem; margin-bottom: 0.5rem; }
+.editActions button { font-size: 0.8rem; padding: 4px 10px; margin-right: 0.5rem; cursor: pointer; }
+.cancelBtn { background: none; border: 1px solid #ccc; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; font-size: 0.9rem; }
+.pageBtn { background: white; border: 1px solid #ccc; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; color: #333; }
+.pageBtn:hover:not(:disabled) { background: #f0f0f0; border-color: #999; }
+.pageBtn:disabled { color: #ccc; border-color: #eee; cursor: not-allowed; }
+.noComments { color: #888; font-style: italic; font-size: 0.9rem; }
+.errorMessage { color: red; font-size: 0.85rem; margin-bottom: 1rem; }
+
+/* --- RELATED ARTICLES SECTION --- */
+.relatedSection { margin-top: 1rem; }
+.relatedTitle { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 2px solid #d93025; display: inline-block; padding-bottom: 0.5rem; }
+.relatedGrid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+@media (min-width: 600px) { .relatedGrid { grid-template-columns: repeat(2, 1fr); } }
+
+.relatedCard { text-decoration: none; display: flex; flex-direction: column; }
+.relatedImageWrapper { position: relative; width: 100%; aspect-ratio: 16/10; background: #eee; border-radius: 6px; overflow: hidden; margin-bottom: 0.75rem; }
+.relatedCardTitle { font-size: 1rem; font-weight: 600; line-height: 1.4; color: #1a1a1a; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.relatedCard:hover .relatedCardTitle { color: #d93025; }
