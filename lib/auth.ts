@@ -1,23 +1,20 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import { Adapter } from "next-auth/adapters";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as Adapter,
+  // ❌ HAPUS ADAPTER INI
+  // adapter: PrismaAdapter(prisma) as Adapter,
 
   providers: [
-    // Google OAuth Provider
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      allowDangerousEmailAccountLinking: true, // Auto-link jika email sama
+      allowDangerousEmailAccountLinking: true,
     }),
 
-    // Credentials Provider (Email/Password)
     CredentialsProvider({
       name: "credentials",
       credentials: {
@@ -29,7 +26,6 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Email dan password wajib diisi");
         }
 
-        // Cari user berdasarkan email
         const user = await prisma.user.findUnique({
           where: { email: credentials.email.toLowerCase() },
         });
@@ -38,7 +34,6 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Email atau password salah");
         }
 
-        // Verifikasi password
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
@@ -48,11 +43,11 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Email atau password salah");
         }
 
-        // Return user object (akan disimpan di session)
         return {
           id: user.id,
           email: user.email,
-          namaLengkap: user.namaLengkap,
+          name: user.namaLengkap, // ✅ Gunakan 'name' untuk NextAuth
+          namaLengkap: user.namaLengkap, // ✅ Tambahkan untuk kompatibilitas dengan User type
           role: user.role,
         };
       },
@@ -60,64 +55,72 @@ export const authOptions: NextAuthOptions = {
   ],
 
   session: {
-    strategy: "jwt", // Menggunakan JWT untuk session
-    maxAge: 30 * 24 * 60 * 60, // 30 hari
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
   },
 
   pages: {
-    signIn: "/auth/login", // Custom login page
-    error: "/auth/error", // Error page
-    newUser: "/auth/welcome", // Redirect untuk new user (optional)
+    signIn: "/login", // ✅ Sesuaikan dengan route Anda
+    error: "/auth/error",
   },
 
   callbacks: {
-    // Callback saat user login dengan Google
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       if (account?.provider === "google") {
-        // Cek apakah user sudah ada di database
         const existingUser = await prisma.user.findUnique({
           where: { email: user.email! },
         });
 
         if (!existingUser) {
-          // Buat user baru untuk Google login
           await prisma.user.create({
             data: {
               email: user.email!,
               namaLengkap: user.name || "Google User",
-              password: "", // Google user tidak punya password
-              nomorHandphone: "", // Bisa diisi nanti
+              password: "",
+              nomorHandphone: "",
               role: "USER",
             },
           });
+          // Set name untuk user baru dari Google
+          user.name = user.name || "Google User";
+        } else {
+          // Untuk user yang sudah ada, ambil nama dari database
+          user.name = existingUser.namaLengkap;
         }
       }
-
-      return true; // Allow sign in
+      return true;
     },
 
-    // Callback untuk JWT token
     async jwt({ token, user, trigger, session }) {
-      // Initial sign in
+      // Initial sign in - ambil data dari user object
       if (user) {
         token.id = user.id;
-        token.role = user.role ?? "";
-        token.email = user.email ?? "";
-        token.name = user.name ?? "";
+        token.role = user.role || "USER";
+        token.email = user.email || "";
+        // Pastikan name diambil dengan benar (dari credentials atau Google)
+        token.name = user.name || "";
+
+        // Jika user dari Google, ambil nama dari database jika belum ada
+        if (!token.name && user.email) {
+          const dbUser = await prisma.user.findUnique({
+            where: { email: user.email },
+            select: { namaLengkap: true },
+          });
+          if (dbUser) {
+            token.name = dbUser.namaLengkap;
+          }
+        }
       }
 
       // Update session (e.g., after profile update)
       if (trigger === "update" && session) {
-        token.name = session.name ?? "";
-        token.email = session.email ?? "";
-        token.name = session.name;
-        token.email = session.email;
+        if (session.name) token.name = session.name;
+        if (session.email) token.email = session.email;
       }
 
       return token;
     },
 
-    // Callback untuk session (data yang bisa diakses di client)
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
@@ -125,17 +128,10 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email as string;
         session.user.name = token.name as string;
       }
-
       return session;
     },
   },
 
-  events: {
-    // Event saat user berhasil login
-    async signIn({ user, account, isNewUser }) {
-      console.log(`User ${user.email} logged in via ${account?.provider}`);
-    },
-  },
-
-  debug: process.env.NODE_ENV === "development", // Enable debug di development
+  secret: process.env.NEXTAUTH_SECRET, // ✅ PENTING!
+  debug: process.env.NODE_ENV === "development",
 };

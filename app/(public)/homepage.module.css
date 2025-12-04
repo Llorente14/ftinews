@@ -194,6 +194,13 @@
     padding: 8px 0;
     border-bottom: 1px solid #e5e5e5;
   }
+
+  .navLinkSlider {
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 5px;
+  }
 }
 
 .navLink,
@@ -201,6 +208,9 @@
   font-size: 14px;
   text-decoration: none;
   transition: color 0.2s;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px;
 }
 
 .navLink {
@@ -213,8 +223,146 @@
 }
 
 .navLinkActive {
-  font-weight: 600;
+  font-weight: 500; /* Tidak bold, hanya warna yang berbeda */
   color: #141414;
+}
+
+/* Slider indicator di bawah link active */
+.navLinkSlider {
+  position: absolute;
+  bottom: 0;
+  left: -8px;
+  right: -8px;
+  height: 4px;
+  background-color: #1a4d8c;
+  border-radius: 2px 2px 0 0;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Category Links - Desktop */
+.categoryLinks {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.categoryLink {
+  font-size: 14px;
+  font-weight: 500;
+  color: #666666;
+  text-decoration: none;
+  transition: color 0.2s;
+  white-space: nowrap;
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px;
+}
+
+.categoryLink:hover {
+  color: #141414;
+}
+
+.categoryLinkActive {
+  color: #141414;
+}
+
+.categoryLinkSlider {
+  position: absolute;
+  bottom: 0;
+  left: -6px;
+  right: -6px;
+  height: 4px;
+  background-color: #1a4d8c;
+  border-radius: 2px 2px 0 0;
+  animation: slideIn 0.3s ease;
+}
+
+/* Category Dropdown - Mobile */
+.categoryDropdown {
+  display: none;
+  position: relative;
+  width: 100%;
+}
+
+.categoryDropdownButton {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666666;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.2s;
+}
+
+.categoryDropdownButton:hover {
+  color: #141414;
+}
+
+.categoryDropdownButton i {
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.categoryDropdownButton .chevronOpen {
+  transform: rotate(180deg);
+}
+
+.categoryDropdownContent {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 8px 0;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.categoryDropdownItem {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666666;
+  text-decoration: none;
+  transition: color 0.2s, background-color 0.2s;
+  border-left: 3px solid transparent;
+}
+
+.categoryDropdownItem:hover {
+  color: #141414;
+  background-color: #f0f0f0;
+  border-left-color: #4a90e2;
+}
+
+@media (max-width: 768px) {
+  .categoryLinks {
+    display: none;
+  }
+
+  .categoryDropdown {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .categoryDropdown {
+    display: none;
+  }
 }
 
 .viewAllLink {
@@ -781,6 +929,7 @@
 }
 
 .sponsoredCard {
+  position: relative;
   background-color: #ffffff;
   border-radius: 8px;
   overflow: hidden;
@@ -849,6 +998,7 @@
   font-size: 12px;
   color: #666666;
   margin-top: auto;
+  position: relative;
 }
 
 .sponsoredCardAuthor {
@@ -1141,6 +1291,7 @@
 }
 
 .highlightCard {
+  position: relative;
   background-color: #ffffff;
   border-radius: 8px;
   overflow: hidden;
@@ -1161,6 +1312,72 @@
   width: 100%;
   height: 220px;
   overflow: hidden;
+}
+
+/* Bookmark Button */
+/* Base Bookmark Button */
+.bookmarkButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border-radius: 50%;
+  border: 2px solid #141414;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #141414;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  z-index: 5;
+}
+
+.bookmarkButton:hover {
+  transform: scale(1.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.bookmarkButton:active {
+  transform: scale(0.95);
+}
+
+.bookmarkButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bookmarkButtonActive {
+  background-color: #ffd700;
+  border-color: #ffd700;
+  color: #ffffff;
+}
+
+.bookmarkButtonActive:hover {
+  background-color: #ffed4e;
+  border-color: #ffed4e;
+}
+
+.bookmarkButtonHighlight {
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+}
+
+.bookmarkButtonHighlight i {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.bookmarkButtonSponsored {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+}
+
+.bookmarkButtonSponsored i {
+  font-size: 16px;
+  line-height: 1;
 }
 
 .highlightCardImage {
@@ -1209,6 +1426,7 @@
   font-size: 12px;
   color: #666666;
   margin-bottom: 12px;
+  position: relative;
 }
 
 .highlightCardAuthor {
