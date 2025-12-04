@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 
-type Bookmark = {
+export type Bookmark = {
   id: string;
   articleId: string;
   createdAt: string;

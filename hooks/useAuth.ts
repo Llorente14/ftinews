@@ -125,7 +125,7 @@ export function useLogout() {
 export function useForgotPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter(); 
+  const router = useRouter();
 
   const sendResetLink = async (email: string) => {
     setIsLoading(true);
@@ -140,7 +140,7 @@ export function useForgotPassword() {
       if (!res.ok || result.status === "error") {
         throw new Error(result.message || "Gagal mengirim kode reset");
       }
-      
+
       // DIUBAH: Hapus '/auth' dari path
       router.push(`/verify-token?email=${encodeURIComponent(email)}`);
       return result;
@@ -211,7 +211,7 @@ export function useVerifyToken() {
       if (!res.ok || result.status === "error") {
         throw new Error(result.message || "Token tidak valid");
       }
-      
+
       // DIUBAH: Hapus '/auth' dari path
       router.push(
         `/new-password?email=${encodeURIComponent(

@@ -11,6 +11,7 @@ type User = {
   role: string;
   createdAt: string;
   updatedAt: string;
+  image?: string | null;
 };
 
 type ProfileResponse = {

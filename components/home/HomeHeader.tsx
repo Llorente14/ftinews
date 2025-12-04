@@ -3,28 +3,23 @@
 import { useState } from "react";
 import type { Session } from "next-auth";
 import Link from "next/link";
+import { useCategories } from "@/hooks/useCategories";
 import styles from "@/app/(public)/homepage.module.css";
-
-type Category = {
-  name: string;
-  count: number;
-};
 
 type HomeHeaderProps = {
   session: Session | null;
-  categories: Category[];
   currentPath: string;
   currentDate: string;
 };
 
 export default function HomeHeader({
   session,
-  categories,
   currentPath,
   currentDate,
 }: HomeHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const { categories } = useCategories();
 
   const segments = currentPath.split("/").filter(Boolean);
   const isKategoriRoute = segments[0] === "kategori";
@@ -80,9 +75,7 @@ export default function HomeHeader({
               onClick={handleToggleMobileMenu}
               aria-label="Toggle menu"
             >
-              <i
-                className={`bx ${isMobileMenuOpen ? "bx-x" : "bx-menu"}`}
-              ></i>
+              <i className={`bx ${isMobileMenuOpen ? "bx-x" : "bx-menu"}`}></i>
             </button>
           </div>
         </div>
@@ -123,9 +116,7 @@ export default function HomeHeader({
                     >
                       {category.name}
                       {isActive && (
-                        <span
-                          className={styles.categoryLinkSlider}
-                        ></span>
+                        <span className={styles.categoryLinkSlider}></span>
                       )}
                     </Link>
                   );
@@ -138,9 +129,7 @@ export default function HomeHeader({
               <div className={styles.categoryDropdown}>
                 <button
                   className={styles.categoryDropdownButton}
-                  onClick={() =>
-                    setIsCategoryDropdownOpen((prev) => !prev)
-                  }
+                  onClick={() => setIsCategoryDropdownOpen((prev) => !prev)}
                   aria-label="Toggle categories"
                 >
                   <span>Kategori</span>
@@ -155,9 +144,7 @@ export default function HomeHeader({
                     {categories.map((category) => (
                       <Link
                         key={category.name}
-                        href={`/kategori/${encodeURIComponent(
-                          category.name
-                        )}`}
+                        href={`/kategori/${encodeURIComponent(category.name)}`}
                         className={styles.categoryDropdownItem}
                         onClick={handleNavClick}
                       >
@@ -214,5 +201,3 @@ export default function HomeHeader({
     </header>
   );
 }
-
-
