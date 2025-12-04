@@ -1,15 +1,69 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable react/no-unescaped-entities */
-// app/(protected)/profile/page.tsx
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import styles from './profile.module.css'; 
-import { useProfile, useUpdateProfile, useUserComments } from '@/hooks/useProfile'; 
-import { useLogout } from '@/hooks/useAuth';
+import styles from "./profile.module.css";
+import {
+  useProfile,
+  useUpdateProfile,
+  useUserComments,
+} from "@/hooks/useProfile";
+import { useLogout } from "@/hooks/useAuth";
+import HomeHeader from "@/components/home/HomeHeader";
 
+// --- 1. KOMPONEN MODAL DELETE ACCOUNT ---
+interface DeleteAccountModalProps {
+  isOpen: boolean;
+  isDeleting: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
+const DeleteAccountModal: React.FC<DeleteAccountModalProps> = ({
+  isOpen,
+  isDeleting,
+  onClose,
+  onConfirm,
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className={styles.modalBackdrop}>
+      <div className={styles.modalContent}>
+        <i
+          className="bx bx-error-circle" // Menggunakan icon warning/error
+          style={{ fontSize: "3rem", color: "#ef4444", marginBottom: "1rem" }}
+        ></i>
+        <h3 className={styles.modalTitle}>Hapus Akun Permanen?</h3>
+        <p className={styles.modalText}>
+          Apakah Anda yakin ingin menghapus akun Anda secara permanen? Semua
+          data, artikel, dan komentar akan hilang.
+          <br />
+          <strong>Tindakan ini tidak dapat dibatalkan.</strong>
+        </p>
+        <div className={styles.modalActions}>
+          <button
+            onClick={onClose}
+            className={styles.cancelBtn}
+            disabled={isDeleting}
+          >
+            Batal
+          </button>
+          <button
+            onClick={onConfirm}
+            className={styles.confirmBtn}
+            disabled={isDeleting}
+            style={{ backgroundColor: "#ef4444", color: "white" }} // Style khusus merah untuk danger
+          >
+            {isDeleting ? "Menghapus..." : "Ya, Hapus Akun"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- 2. MAIN PAGE COMPONENT ---
 export default function ProfilePage() {
   const { profile, fetchProfile, isLoading: profileLoading } = useProfile();
   const { updateProfile, isLoading: isUpdating } = useUpdateProfile();
@@ -20,6 +74,10 @@ export default function ProfilePage() {
   const [inputPassword, setInputPassword] = useState("");
   const [feedback, setFeedback] = useState({ message: "", type: "" });
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  // State untuk Modal Hapus Akun
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -33,7 +91,10 @@ export default function ProfilePage() {
     if (!file) return;
 
     if (file.size > 1024 * 1024) {
-      setFeedback({ message: "Ukuran gambar terlalu besar (Max 1MB).", type: "error" });
+      setFeedback({
+        message: "Ukuran gambar terlalu besar (Max 1MB).",
+        type: "error",
+      });
       return;
     }
 
@@ -45,8 +106,11 @@ export default function ProfilePage() {
       const base64String = reader.result as string;
       try {
         await updateProfile({ image: base64String });
-        await fetchProfile(); 
-        setFeedback({ message: "Foto profil berhasil diperbarui!", type: "success" });
+        await fetchProfile();
+        setFeedback({
+          message: "Foto profil berhasil diperbarui!",
+          type: "success",
+        });
         setTimeout(() => setFeedback({ message: "", type: "" }), 3000);
       } catch (err) {
         console.error(err);
@@ -63,7 +127,7 @@ export default function ProfilePage() {
     if (!inputName.trim()) return;
     try {
       await updateProfile({ namaLengkap: inputName });
-      await fetchProfile(); 
+      await fetchProfile();
       setFeedback({ message: "Nama berhasil diperbarui.", type: "success" });
       setTimeout(() => setFeedback({ message: "", type: "" }), 3000);
     } catch (err) {
@@ -82,7 +146,7 @@ export default function ProfilePage() {
     try {
       await updateProfile({ password: inputPassword });
       setFeedback({ message: "Password berhasil diubah.", type: "success" });
-      setInputPassword(""); 
+      setInputPassword("");
       setTimeout(() => setFeedback({ message: "", type: "" }), 3000);
     } catch (err) {
       console.error(err);
@@ -90,24 +154,35 @@ export default function ProfilePage() {
     }
   };
 
-  // --- Hapus Akun ---
-  const handleDeleteAccount = async () => {
-    if (!window.confirm("Apakah Anda yakin ingin menghapus akun secara permanen? Tindakan ini tidak dapat dibatalkan.")) {
-      return;
-    }
+  // --- LOGIC HAPUS AKUN (DIPISAH) ---
 
+  // 1. Fungsi saat tombol ditekan (Hanya membuka modal)
+  const handleDeleteClick = () => {
+    setShowDeleteModal(true);
+  };
+
+  // 2. Fungsi eksekusi API (Dipanggil oleh Modal "Ya, Hapus")
+  const handleConfirmDeleteAccount = async () => {
+    setIsDeletingAccount(true); // Set loading state
     try {
       const res = await fetch("/api/users/me", { method: "DELETE" });
       if (res.ok) {
-        alert("Akun berhasil dihapus. Sampai jumpa!");
-        await logout(); 
-        window.location.href = "/"; 
+        // Jangan alert disini jika ingin UX smooth, langsung logout/redirect
+        // Tapi jika ingin notifikasi:
+        // alert("Akun berhasil dihapus. Sampai jumpa!");
+
+        await logout();
+        window.location.href = "/";
       } else {
-        alert("Gagal menghapus akun.");
+        setFeedback({ message: "Gagal menghapus akun.", type: "error" });
+        setShowDeleteModal(false); // Tutup modal jika gagal
       }
     } catch (err) {
       console.error(err);
-      alert("Terjadi kesalahan sistem.");
+      setFeedback({ message: "Terjadi kesalahan sistem.", type: "error" });
+      setShowDeleteModal(false);
+    } finally {
+      setIsDeletingAccount(false);
     }
   };
 
@@ -120,136 +195,234 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.container}>
-        <div className={styles.card}>
-          
-          {/* Header Profil */}
-          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-            <div className={styles.profilePicWrapper}>
-              <img
-                src={
-                  (profile?.image && profile.image.startsWith("data:image")) 
-                    ? profile.image 
-                    : "https://via.placeholder.com/100"
-                }
-                alt="Profile"
-                className={styles.profileImg}
-                style={{ 
-                  opacity: isUploadingImage ? 0.5 : 1,
-                  objectFit: "cover" 
-                }}
-                onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/100"; }}
-              />
-              <label 
-                htmlFor="profile-upload" 
-                className={styles.profilePicOverlay}
-                style={{ cursor: isUploadingImage ? 'wait' : 'pointer' }}
-              >
-                {isUploadingImage ? (
-                  <span className="spinner-border spinner-border-sm text-white" role="status"></span>
-                ) : (
-                  <i className="bi bi-pencil-fill fs-4 text-white"></i>
-                )}
-                <input 
-                  type="file" 
-                  id="profile-upload" 
-                  style={{ display: 'none' }} 
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  disabled={isUploadingImage}
+    <>
+      <HomeHeader currentPath={"/profile"} currentDate={""} />
+
+      {/* RENDER MODAL DISINI */}
+      <DeleteAccountModal
+        isOpen={showDeleteModal}
+        isDeleting={isDeletingAccount}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleConfirmDeleteAccount}
+      />
+
+      <div className={styles.wrapper}>
+        <div className={styles.container}>
+          <div className={styles.card}>
+            {/* Header Profil */}
+            <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+              <div className={styles.profilePicWrapper}>
+                <img
+                  src={
+                    profile?.image && profile.image.startsWith("data:image")
+                      ? profile.image
+                      : "https://via.placeholder.com/100"
+                  }
+                  alt="Profile"
+                  className={styles.profileImg}
+                  style={{
+                    opacity: isUploadingImage ? 0.5 : 1,
+                    objectFit: "cover",
+                  }}
+                  onError={(e) => {
+                    e.currentTarget.src = "https://via.placeholder.com/100";
+                  }}
                 />
-              </label>
-            </div>
-
-            <h2 className={styles.title} style={{ marginBottom: '0.5rem' }}>
-              {profile?.namaLengkap || "User"}
-            </h2>
-            <p className={styles.textMuted}>{profile?.email}</p>
-            <p className={`${styles.textMuted} ${styles.textSmall}`} style={{ marginTop: '0.5rem' }}>
-              {profile?.nomorHandphone}
-            </p>
-
-            <div className={styles.actionButtons}>
-               <button className={styles.btnDangerOutline} onClick={logout} disabled={isLoggingOut}>
-                 {isLoggingOut ? "Keluar..." : "Logout"}
-               </button>
-               <Link href="/bookmark" className={styles.btnPrimary} style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                 <i className="bi bi-bookmark me-2"></i> Bookmark Page
-               </Link>
-            </div>
-          </div>
-
-          <hr style={{ margin: '2rem 0', borderColor: '#eee' }} />
-
-          {feedback.message && (
-            <div className={`${styles.alert} ${feedback.type === 'success' ? styles.alertSuccess : styles.alertError}`}>
-              <span>{feedback.message}</span>
-            </div>
-          )}
-
-          {/* Form Manage Account */}
-          <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Manage Account</h3>
-            
-            <form onSubmit={handleSaveName} className={styles.formGroup}>
-              <label htmlFor="namaLengkap" className={styles.label}>Change Name</label>
-              <input type="text" id="namaLengkap" className={styles.input} value={inputName} onChange={(e) => setInputName(e.target.value)} disabled={isUpdating} />
-              <div style={{ marginTop: '1rem' }}>
-                <button type="submit" className={styles.btnPrimary} style={{ width: 'auto' }} disabled={isUpdating}>Save Name</button>
+                <label
+                  htmlFor="profile-upload"
+                  className={styles.profilePicOverlay}
+                  style={{ cursor: isUploadingImage ? "wait" : "pointer" }}
+                >
+                  {isUploadingImage ? (
+                    <span
+                      className="spinner-border spinner-border-sm text-white"
+                      role="status"
+                    ></span>
+                  ) : (
+                    <i className="bi bi-pencil-fill fs-4 text-white"></i>
+                  )}
+                  <input
+                    type="file"
+                    id="profile-upload"
+                    style={{ display: "none" }}
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={isUploadingImage}
+                  />
+                </label>
               </div>
-            </form>
 
-            <form onSubmit={handleSavePassword} className={styles.formGroup} style={{ marginTop: '2rem' }}>
-              <label htmlFor="newPassword" className={styles.label}>Change Password</label>
-              <input type="password" id="newPassword" className={styles.input} value={inputPassword} onChange={(e) => setInputPassword(e.target.value)} disabled={isUpdating} />
-              <div style={{ marginTop: '1rem' }}>
-                <button type="submit" className={styles.btnPrimary} style={{ width: 'auto' }} disabled={isUpdating}>Save Password</button>
-              </div>
-            </form>
-
-            {/* --- TOMBOL DELETE ACCOUNT --- */}
-            <div style={{ marginTop: '3rem', borderTop: '1px solid #eee', paddingTop: '1.5rem' }}>
-              <button 
-               className={styles.btnDelete}
-                onClick={handleDeleteAccount}
+              <h2 className={styles.title} style={{ marginBottom: "0.5rem" }}>
+                {profile?.namaLengkap || "User"}
+              </h2>
+              <p className={styles.textMuted}>{profile?.email}</p>
+              <p
+                className={`${styles.textMuted} ${styles.textSmall}`}
+                style={{ marginTop: "0.5rem" }}
               >
-                Delete Account
-              </button>
-            </div>
-          </div>
+                {profile?.nomorHandphone}
+              </p>
 
-          <hr style={{ margin: '2rem 0', borderColor: '#eee' }} />
-
-          {/* Comment History */}
-          <div>
-            <h3 className={styles.sectionTitle}>Comment History</h3>
-            {commentsLoading ? (
-              <div className="text-center py-3">
-                <div className="spinner-border spinner-border-sm text-primary"></div>
-                <span className="ms-2 text-muted">Memuat komentar...</span>
+              <div className={styles.actionButtons}>
+                <button
+                  className={styles.btnDangerOutline}
+                  onClick={logout}
+                  disabled={isLoggingOut}
+                >
+                  {isLoggingOut ? "Keluar..." : "Logout"}
+                </button>
+                <Link
+                  href="/bookmark"
+                  className={styles.btnPrimary}
+                  style={{
+                    textDecoration: "none",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <i className="bi bi-bookmark me-2"></i> Bookmark Page
+                </Link>
               </div>
-            ) : comments.length === 0 ? (
-              <div className="alert alert-secondary text-center small">Belum ada riwayat komentar.</div>
-            ) : (
-              <div className="d-flex flex-column gap-3">
-                {comments.map((comment) => (
-                  <div key={comment.id} className={styles.commentCard}>
-                    <p style={{ fontStyle: 'italic', marginBottom: '0.5rem' }}>"{comment.content}"</p>
-                    <Link href={`/artikel/${comment.article.slug}`} style={{ color: '#333', fontSize: '0.9rem', textDecoration: 'none', fontWeight:'bold' }}>
-                      on "{comment.article.title}"
-                    </Link>
-                    <div className={styles.commentHeader}>
-                      <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                ))}
+            </div>
+
+            <hr style={{ margin: "2rem 0", borderColor: "#eee" }} />
+
+            {feedback.message && (
+              <div
+                className={`${styles.alert} ${
+                  feedback.type === "success"
+                    ? styles.alertSuccess
+                    : styles.alertError
+                }`}
+              >
+                <span>{feedback.message}</span>
               </div>
             )}
-          </div>
 
+            {/* Form Manage Account */}
+            <div className={styles.section}>
+              <h3 className={styles.sectionTitle}>Manage Account</h3>
+
+              <form onSubmit={handleSaveName} className={styles.formGroup}>
+                <label htmlFor="namaLengkap" className={styles.label}>
+                  Change Name
+                </label>
+                <input
+                  type="text"
+                  id="namaLengkap"
+                  className={styles.input}
+                  value={inputName}
+                  onChange={(e) => setInputName(e.target.value)}
+                  disabled={isUpdating}
+                />
+                <div style={{ marginTop: "1rem" }}>
+                  <button
+                    type="submit"
+                    className={styles.btnPrimary}
+                    style={{ width: "auto" }}
+                    disabled={isUpdating}
+                  >
+                    Save Name
+                  </button>
+                </div>
+              </form>
+
+              <form
+                onSubmit={handleSavePassword}
+                className={styles.formGroup}
+                style={{ marginTop: "2rem" }}
+              >
+                <label htmlFor="newPassword" className={styles.label}>
+                  Change Password
+                </label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  className={styles.input}
+                  value={inputPassword}
+                  onChange={(e) => setInputPassword(e.target.value)}
+                  disabled={isUpdating}
+                />
+                <div style={{ marginTop: "1rem" }}>
+                  <button
+                    type="submit"
+                    className={styles.btnPrimary}
+                    style={{ width: "auto" }}
+                    disabled={isUpdating}
+                  >
+                    Save Password
+                  </button>
+                </div>
+              </form>
+
+              {/* --- TOMBOL DELETE ACCOUNT --- */}
+              <div
+                style={{
+                  marginTop: "3rem",
+                  borderTop: "1px solid #eee",
+                  paddingTop: "1.5rem",
+                }}
+              >
+                <button
+                  className={styles.btnDelete}
+                  onClick={handleDeleteClick} // Mengarah ke function buka modal
+                >
+                  Delete Account
+                </button>
+              </div>
+            </div>
+
+            <hr style={{ margin: "2rem 0", borderColor: "#eee" }} />
+
+            {/* Comment History */}
+            <div>
+              <h3 className={styles.sectionTitle}>Comment History</h3>
+              {commentsLoading ? (
+                <div className="text-center py-3">
+                  <div className="spinner-border spinner-border-sm text-primary"></div>
+                  <span className="ms-2 text-muted">Memuat komentar...</span>
+                </div>
+              ) : comments.length === 0 ? (
+                <div className="alert alert-secondary text-center small">
+                  Belum ada riwayat komentar.
+                </div>
+              ) : (
+                <div className="d-flex flex-column gap-3">
+                  {comments.map((comment) => (
+                    <div key={comment.id} className={styles.commentCard}>
+                      <p
+                        style={{
+                          fontStyle: "italic",
+                          marginBottom: "0.5rem",
+                        }}
+                      >
+                        &quot;{comment.content}&quot;
+                      </p>
+                      <Link
+                        href={`/artikel/${comment.article.slug}`}
+                        style={{
+                          color: "#333",
+                          fontSize: "0.9rem",
+                          textDecoration: "none",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        on &quot;{comment.article.title}&quot;
+                      </Link>
+                      <div className={styles.commentHeader}>
+                        <span>
+                          {new Date(comment.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

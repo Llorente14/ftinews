@@ -65,6 +65,7 @@ function ArticleResultItem({ article }: { article: ArticleListItem }) {
                 alt={article.title}
                 width={208}
                 height={144}
+                unoptimized
                 className="article-image"
               />
             </div>

@@ -55,9 +55,23 @@ export function useProfile() {
       const res = await fetch("/api/users/me", {
         credentials: "include",
       });
-      const result: ProfileResponse = await res.json();
+      // Cek lebih dulu apakah response OK dan bertipe JSON
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(
+          text || `Gagal mengambil profil (status ${res.status})`
+        );
+      }
 
-      if (!res.ok || result.status === "error") {
+      let result: ProfileResponse;
+      try {
+        result = (await res.json()) as ProfileResponse;
+      } catch (e) {
+        // Jika body kosong / bukan JSON, jangan crash React
+        throw new Error("Response profil tidak valid / bukan JSON.");
+      }
+
+      if (result.status === "error") {
         throw new Error(result.message || "Gagal mengambil profil");
       }
 
@@ -97,9 +111,22 @@ export function useUpdateProfile() {
         credentials: "include",
       });
 
-      const result: ProfileResponse = await res.json();
+      // Jika server mengembalikan error HTML / body kosong, jangan lempar SyntaxError mentah
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(
+          text || `Gagal memperbarui profil (status ${res.status})`
+        );
+      }
 
-      if (!res.ok || result.status === "error") {
+      let result: ProfileResponse;
+      try {
+        result = (await res.json()) as ProfileResponse;
+      } catch (e) {
+        throw new Error("Response update profil tidak valid / bukan JSON.");
+      }
+
+      if (result.status === "error") {
         throw new Error(result.message || "Gagal memperbarui profil");
       }
 
@@ -115,7 +142,6 @@ export function useUpdateProfile() {
 
   return { updateProfile, isLoading, error };
 }
-
 
 export function useUserComments() {
   const { data: session } = useSession();

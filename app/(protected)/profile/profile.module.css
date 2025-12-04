@@ -2,16 +2,139 @@
 
 /* Animasi (Sama seperti Login) */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes slideIn {
-  from { opacity: 0; transform: translateX(-20px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
+/* --- Modal Backdrop (Layar Hitam Transparan) --- */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Gelap transparan */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(2px); /* Efek blur sedikit agar fokus */
+}
+
+/* --- Modal Content (Kotak Putih) --- */
+.modalContent {
+  background: white;
+  padding: 2.5rem 2rem;
+  border-radius: 16px; /* Sudut membulat */
+  width: 90%;
+  max-width: 400px; /* Lebar maksimal agar tidak terlalu lebar */
+  text-align: center; /* Semua teks rata tengah */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  animation: popIn 0.2s ease-out;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* --- Icon Sampah --- */
+.iconWrapper {
+  margin-bottom: 1.5rem;
+}
+
+.iconTrash {
+  font-size: 3.5rem; /* Ukuran icon besar */
+  color: #ef4444; /* Warna merah */
+}
+
+/* --- Teks Judul & Pesan --- */
+.modalTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.75rem;
+}
+
+.modalText {
+  color: #6b7280; /* Abu-abu agak gelap */
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 2rem;
+}
+
+/* --- Tombol Actions --- */
+.modalActions {
+  display: flex;
+  gap: 1rem; /* Jarak antar tombol */
+  justify-content: center;
+}
+
+.cancelBtn,
+.confirmBtn {
+  flex: 1; /* Tombol memanjang memenuhi ruang */
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* Tombol Batal (Abu-abu) */
+.cancelBtn {
+  background-color: #e5e7eb;
+  color: #374151;
+}
+
+.cancelBtn:hover {
+  background-color: #d1d5db;
+}
+
+/* Tombol Hapus (Merah) */
+.confirmBtn {
+  background-color: #ef4444;
+  color: white;
+}
+
+.confirmBtn:hover {
+  background-color: #dc2626;
+}
+
+.confirmBtn:disabled {
+  background-color: #fca5a5;
+  cursor: not-allowed;
+}
+
+/* ... sisa css profile page lainnya ... */
 
 /* Layout Wrapper & Card */
 .wrapper {
@@ -21,7 +144,8 @@
   align-items: flex-start; /* Menggunakan flex-start agar bisa scroll jika konten panjang */
   justify-content: center;
   padding: 40px 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'sans-serif';
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "sans-serif";
 }
 
 .container {
