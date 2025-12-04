@@ -3,6 +3,7 @@
 import { signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import React from "react";
 
 // Tipe data (tetap sama)
