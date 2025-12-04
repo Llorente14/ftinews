@@ -25,6 +25,7 @@ type UpdateProfileData = {
   namaLengkap?: string;
   nomorHandphone?: string;
   password?: string;
+  image?: string;
 };
 
 type UserComment = {
@@ -113,6 +114,7 @@ export function useUpdateProfile() {
 
   return { updateProfile, isLoading, error };
 }
+
 
 export function useUserComments() {
   const { data: session } = useSession();

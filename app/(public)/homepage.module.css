@@ -4,9 +4,20 @@
   flex-direction: column;
   background-color: #f7f7f7;
   color: #141414;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f7f7f7;
+  color: #141414;
 }
 
 .loadingContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 18px;
+  color: #666666;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -227,9 +238,12 @@
 .navLink {
   font-weight: 500;
   color: #666666;
+  font-weight: 500;
+  color: #666666;
 }
 
 .navLink:hover {
+  color: #141414;
   color: #141414;
 }
 
@@ -1496,10 +1510,16 @@
   text-align: center;
   color: #666666;
   font-size: 14px;
+  padding: 40px 20px;
+  text-align: center;
+  color: #666666;
+  font-size: 14px;
 }
 
 /* Sidebar */
 .highlightsSidebar {
+  position: sticky;
+  top: 100px;
   position: sticky;
   top: 100px;
 }
@@ -1510,17 +1530,28 @@
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   margin-bottom: 24px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
 }
 
 .sidebarSection:last-child {
+  margin-bottom: 0;
   margin-bottom: 0;
 }
 
 .sidebarHeader {
   margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .sidebarTitle {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a4d8c;
+  margin: 0 0 8px 0;
   font-size: 20px;
   font-weight: 700;
   color: #1a4d8c;
@@ -1532,9 +1563,16 @@
   height: 3px;
   background-color: #1a4d8c;
   margin-top: 4px;
+  width: 50px;
+  height: 3px;
+  background-color: #1a4d8c;
+  margin-top: 4px;
 }
 
 .topicsList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -1542,9 +1580,11 @@
 
 .topicItem {
   margin-bottom: 12px;
+  margin-bottom: 12px;
 }
 
 .topicItem:last-child {
+  margin-bottom: 0;
   margin-bottom: 0;
 }
 
@@ -1557,13 +1597,24 @@
   font-size: 14px;
   transition: color 0.2s;
   padding: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #666666;
+  font-size: 14px;
+  transition: color 0.2s;
+  padding: 8px 0;
 }
 
 .topicLink:hover {
   color: #1a4d8c;
+  color: #1a4d8c;
 }
 
 .topicLink i {
+  font-size: 18px;
+  color: #999999;
   font-size: 18px;
   color: #999999;
 }
@@ -1571,9 +1622,13 @@
 .topicName {
   flex: 1;
   text-transform: capitalize;
+  flex: 1;
+  text-transform: capitalize;
 }
 
 .topicCount {
+  color: #999999;
+  font-weight: 500;
   color: #999999;
   font-weight: 500;
 }
@@ -1584,10 +1639,17 @@
   text-align: center;
   color: #666666;
   font-size: 14px;
+  padding: 20px 0;
+  text-align: center;
+  color: #666666;
+  font-size: 14px;
 }
 
 /* Popular Posts in Sidebar */
 .popularPostsListSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -1602,18 +1664,35 @@
   padding-bottom: 20px;
   border-bottom: 1px solid #e5e5e5;
   transition: opacity 0.2s;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e5e5e5;
+  transition: opacity 0.2s;
 }
 
 .popularPostItemSidebar:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
   border-bottom: none;
   padding-bottom: 0;
 }
 
 .popularPostItemSidebar:hover {
   opacity: 0.7;
+  opacity: 0.7;
 }
 
 .popularPostImageWrapperSidebar {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
   position: relative;
   width: 80px;
   height: 80px;
@@ -1626,9 +1705,17 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .popularPostContentSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1639,9 +1726,21 @@
 .popularPostDateSidebar {
   font-size: 12px;
   color: #999999;
+  font-size: 12px;
+  color: #999999;
 }
 
 .popularPostTitleSidebar {
+  font-size: 14px;
+  font-weight: 600;
+  color: #141414;
+  margin: 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   font-size: 14px;
   font-weight: 600;
   color: #141414;

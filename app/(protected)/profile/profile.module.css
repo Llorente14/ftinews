@@ -1,0 +1,232 @@
+/* app/(protected)/profile/profile.module.css */
+
+/* Animasi (Sama seperti Login) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Layout Wrapper & Card */
+.wrapper {
+  background: #f5f5f5;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start; /* Menggunakan flex-start agar bisa scroll jika konten panjang */
+  justify-content: center;
+  padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'sans-serif';
+}
+
+.container {
+  animation: fadeIn 0.6s ease-out;
+  width: 100%;
+  max-width: 800px; /* Lebih lebar dari login karena konten profile banyak */
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  position: relative;
+}
+
+/* Typography */
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1a1a1a;
+  margin-bottom: 1.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.textMuted {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.textSmall {
+  font-size: 0.8rem;
+}
+
+/* Form Styles (Diambil dari Login) */
+.formGroup {
+  margin-bottom: 1.5rem;
+  animation: slideIn 0.5s ease-out;
+}
+
+.label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 0.95rem;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 1px solid #d0d0d0;
+  background: #ffffff;
+  color: #1a1a1a;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #333;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+/* Buttons */
+.btnPrimary {
+  width: 100%;
+  background-color: #333;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btnPrimary:hover {
+  background-color: #1a1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btnDangerOutline {
+  width: 100%;
+  background-color: transparent;
+  color: #dc3545;
+  border: 1px solid #dc3545;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btnDangerOutline:hover {
+  background-color: #dc3545;
+  color: white;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Profile Picture Specific Styles */
+.profilePicWrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 1.5rem;
+}
+
+.profileImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #f5f5f5;
+}
+
+.profilePicOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.profilePicWrapper:hover .profilePicOverlay {
+  opacity: 1;
+}
+
+/* Comment History Card Style */
+.commentCard {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #eee;
+}
+
+.commentHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.btnDelete {
+  width: 100%;
+  padding: 12px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #dc3545; /* Merah Bootstrap */
+  border: 1px solid #dc3545;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btnDelete:hover {
+  background-color: #bb2d3b; /* Merah lebih gelap saat hover */
+  border-color: #b02a37;
+}
+
+/* Alerts */
+.alert {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.alertSuccess {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
