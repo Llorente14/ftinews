@@ -62,31 +62,29 @@ export async function sendWelcomeEmail(email: string, name: string) {
 }
 
 /**
- * Send password reset email
+ * KIRIM KODE RESET PASSWORD (6-DIGIT)
  */
-export async function sendPasswordResetEmail(
+export async function sendPasswordResetTokenEmail(
   email: string,
   name: string,
-  resetToken: string
+  token: string // Ini adalah kode 6-digit
 ) {
-  const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${resetToken}`;
-
   try {
     const transporter = createTransporter();
 
     const mailOptions = {
       from: EMAIL_CONFIG.from,
       to: email,
-      subject: "Reset Password - FTI News",
-      html: getPasswordResetTemplate(name, resetUrl),
+      subject: "Kode Reset Password - FTI News",
+      html: getPasswordResetTokenTemplate(name, token), // Panggil template baru
     };
 
     const info = await transporter.sendMail(mailOptions);
 
-    console.log("Password reset email sent successfully:", info.messageId);
+    console.log("Password reset KODE email sent successfully:", info.messageId);
     return { success: true, data: { messageId: info.messageId } };
   } catch (error) {
-    console.error("Error sending password reset email:", error);
+    console.error("Error sending password reset KODE email:", error);
     return { success: false, error };
   }
 }
@@ -200,10 +198,8 @@ function getWelcomeEmailTemplate(name: string): string {
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
     <tr>
       <td align="center" style="padding: 40px 20px;">
-        <!-- Main Container -->
         <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
           
-          <!-- Header with Black Background -->
           <tr>
             <td style="background-color: #000000; padding: 40px 40px 30px; text-align: center;">
               <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; letter-spacing: -0.5px;">
@@ -215,7 +211,6 @@ function getWelcomeEmailTemplate(name: string): string {
             </td>
           </tr>
 
-          <!-- Welcome Message -->
           <tr>
             <td style="padding: 50px 40px 30px;">
               <h2 style="margin: 0 0 20px; color: #000000; font-size: 28px; font-weight: 600; line-height: 1.3;">
@@ -228,7 +223,6 @@ function getWelcomeEmailTemplate(name: string): string {
                 Dengan akun Anda, sekarang Anda dapat:
               </p>
               
-              <!-- Features List -->
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 0 30px;">
                 <tr>
                   <td style="padding: 12px 0;">
@@ -288,7 +282,6 @@ function getWelcomeEmailTemplate(name: string): string {
                 </tr>
               </table>
 
-              <!-- CTA Button -->
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td align="center" style="padding: 20px 0 30px;">
@@ -303,7 +296,6 @@ function getWelcomeEmailTemplate(name: string): string {
             </td>
           </tr>
 
-          <!-- Tips Section -->
           <tr>
             <td style="padding: 0 40px 40px;">
               <div style="background-color: #f8f8f8; border-left: 4px solid #000000; padding: 20px; border-radius: 4px;">
@@ -317,7 +309,6 @@ function getWelcomeEmailTemplate(name: string): string {
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td style="background-color: #000000; padding: 30px 40px; text-align: center;">
               <p style="margin: 0 0 10px; color: #ffffff; font-size: 14px;">
@@ -356,9 +347,9 @@ function getWelcomeEmailTemplate(name: string): string {
 }
 
 /**
- * Password reset email template
+ * Template Email untuk Kode Reset Password (6-digit)
  */
-function getPasswordResetTemplate(name: string, resetUrl: string): string {
+function getPasswordResetTokenTemplate(name: string, token: string): string {
   return `
 <!DOCTYPE html>
 <html lang="id">
@@ -373,61 +364,49 @@ function getPasswordResetTemplate(name: string, resetUrl: string): string {
       <td align="center" style="padding: 40px 20px;">
         <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
           
-          <!-- Header -->
           <tr>
             <td style="background-color: #000000; padding: 40px 40px 30px; text-align: center;">
               <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 700;">FTI News</h1>
             </td>
           </tr>
 
-          <!-- Content -->
           <tr>
             <td style="padding: 50px 40px;">
               <h2 style="margin: 0 0 20px; color: #000000; font-size: 24px; font-weight: 600;">
-                Reset Password Anda
+                Kode Reset Password Anda
               </h2>
               <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
                 Hai ${name},
               </p>
               <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
-                Kami menerima permintaan untuk mereset password akun Anda. Klik tombol di bawah untuk membuat password baru:
+                Kami menerima permintaan untuk mereset password akun Anda. Gunakan kode sekali pakai di bawah ini untuk mengatur password baru Anda:
               </p>
 
-              <!-- CTA Button -->
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td align="center" style="padding: 30px 0;">
-                    <a href="${resetUrl}" style="display: inline-block; padding: 16px 40px; background-color: #000000; color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: 600;">
-                      Reset Password
-                    </a>
+                    <div style="padding: 16px 40px; background-color: #f0f0f0; border-radius: 6px; font-size: 32px; font-weight: 700; letter-spacing: 5px; color: #000000;">
+                      ${token}
+                    </div>
                   </td>
                 </tr>
               </table>
 
-              <!-- Warning Box -->
               <div style="background-color: #fff9e6; border-left: 4px solid #ffcc00; padding: 20px; border-radius: 4px; margin: 20px 0;">
                 <p style="margin: 0 0 10px; color: #000000; font-size: 14px; font-weight: 600;">
                   ⚠️ Penting:
                 </p>
                 <p style="margin: 0; color: #555555; font-size: 14px; line-height: 1.6;">
-                  Link ini akan kadaluarsa dalam <strong>1 jam</strong>. Jika Anda tidak merasa meminta reset password, abaikan email ini.
+                  Kode ini akan kadaluarsa dalam <strong>10 menit</strong>. Jika Anda tidak merasa meminta reset password, abaikan email ini.
                 </p>
               </div>
-
-              <p style="margin: 20px 0 0; color: #666666; font-size: 14px; line-height: 1.6;">
-                Atau copy dan paste link berikut ke browser Anda:<br>
-                <a href="${resetUrl}" style="color: #000000; word-break: break-all;">${resetUrl}</a>
-              </p>
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td style="background-color: #000000; padding: 30px 40px; text-align: center;">
               <p style="margin: 0 0 10px; color: #ffffff; font-size: 14px;">
-                Butuh bantuan? <a href="${
-                  process.env.NEXTAUTH_URL
-                }/contact" style="color: #ffffff; text-decoration: underline;">Hubungi kami</a>
+                Butuh bantuan? <a href="${process.env.NEXTAUTH_URL}/contact" style="color: #ffffff; text-decoration: underline;">Hubungi kami</a>
               </p>
               <p style="margin: 0; color: #666666; font-size: 11px;">
                 © ${new Date().getFullYear()} FTI News. All rights reserved.
@@ -466,7 +445,6 @@ function getContactNotificationTemplate(data: {
       <td align="center" style="padding: 40px 20px;">
         <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden;">
           
-          <!-- Header -->
           <tr>
             <td style="background-color: #000000; padding: 30px 40px; text-align: center;">
               <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700;">
@@ -475,7 +453,6 @@ function getContactNotificationTemplate(data: {
             </td>
           </tr>
 
-          <!-- Content -->
           <tr>
             <td style="padding: 40px;">
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -507,7 +484,6 @@ function getContactNotificationTemplate(data: {
                 </tr>
               </table>
 
-              <!-- Reply Button -->
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                 <tr>
                   <td align="center" style="padding: 20px 0 0;">
@@ -520,7 +496,6 @@ function getContactNotificationTemplate(data: {
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td style="background-color: #f8f8f8; padding: 20px 40px; text-align: center; border-top: 1px solid #e5e5e5;">
               <p style="margin: 0; color: #666666; font-size: 12px;">
@@ -576,8 +551,8 @@ function getContactConfirmationTemplate(data: {
                   data.subjek
                 }</p>
                 <p style="margin: 0; color: #333333; font-size: 14px; line-height: 1.6; white-space: pre-line;">${
-    data.isiPesan
-  }</p>
+                  data.isiPesan
+                }</p>
               </div>
               <p style="margin: 0 0 16px; color: #333333; font-size: 15px; line-height: 1.6;">
                 Tim kami akan meninjau pesan Anda dan memberikan tanggapan secepatnya. Jika ada informasi tambahan, silakan balas email ini.
@@ -622,7 +597,6 @@ function getNewsletterConfirmationTemplate(email: string): string {
       <td align="center" style="padding: 40px 20px;">
         <table role="presentation" width="600" cellspacing="0" cellpadding="0" border="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
           
-          <!-- Header -->
           <tr>
             <td style="background-color: #000000; padding: 40px; text-align: center;">
               <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700;">📧</h1>
@@ -632,7 +606,6 @@ function getNewsletterConfirmationTemplate(email: string): string {
             </td>
           </tr>
 
-          <!-- Content -->
           <tr>
             <td style="padding: 50px 40px;">
               <p style="margin: 0 0 20px; color: #333333; font-size: 16px; line-height: 1.6;">
@@ -642,7 +615,6 @@ function getNewsletterConfirmationTemplate(email: string): string {
                 Setiap minggu, kami akan mengirimkan update artikel teknologi terbaru, tips, dan insight langsung ke inbox Anda di <strong>${email}</strong>.
               </p>
 
-              <!-- Benefits -->
               <div style="background-color: #000000; color: #ffffff; padding: 30px; border-radius: 6px; margin: 30px 0;">
                 <p style="margin: 0 0 15px; font-size: 18px; font-weight: 600;">
                   Yang Akan Anda Dapatkan:
@@ -659,13 +631,12 @@ function getNewsletterConfirmationTemplate(email: string): string {
                 Tidak ingin menerima email lagi? Anda dapat <a href="${
                   process.env.NEXTAUTH_URL
                 }/unsubscribe?email=${encodeURIComponent(
-    email
-  )}" style="color: #000000; text-decoration: underline;">berhenti berlangganan</a> kapan saja.
+                  email
+                )}" style="color: #000000; text-decoration: underline;">berhenti berlangganan</a> kapan saja.
               </p>
             </td>
           </tr>
 
-          <!-- Footer -->
           <tr>
             <td style="background-color: #000000; padding: 30px 40px; text-align: center;">
               <p style="margin: 0 0 10px; color: #ffffff; font-size: 14px;">
@@ -684,4 +655,3 @@ function getNewsletterConfirmationTemplate(email: string): string {
 </html>
   `;
 }
-

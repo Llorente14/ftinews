@@ -1,0 +1,93 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 2.5rem; /* px-10 py-3 */
+  background-color: var(--white);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logoSvg {
+  width: 24px;
+  height: 24px;
+}
+
+.brandTitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+}
+
+.rightSection {
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
+
+.navLink {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.navLink:hover {
+  opacity: 0.7;
+}
+
+.userActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.langInfo {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+  margin-right: 10px;
+}
+
+.loginBtn {
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  padding: 0 1rem;
+  height: 40px;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.loginBtn:hover {
+  opacity: 0.8;
+}
+
+.profileBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(20, 20, 20, 0.1); /* primary/10 */
+  color: var(--primary);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profileBtn:hover {
+  background-color: rgba(20, 20, 20, 0.2);
+}

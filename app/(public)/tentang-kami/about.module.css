@@ -1,0 +1,175 @@
+.mainContainer {
+  max-width: 900px; 
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+  min-height: 80vh;
+}
+
+.headerSection {
+    margin-bottom: 4rem;
+}
+
+.tagline {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2563eb;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+}
+
+.mainTitle {
+  font-family: var(--font-display); 
+  font-size: 3.5rem; 
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.05em; 
+  color: var(--primary);
+  margin: 0;
+}
+
+.divider {
+    height: 3px;
+    width: 80px;
+    background-color: var(--foreground);
+    border: none;
+    margin-top: 2rem;
+    opacity: 0.1;
+}
+
+.missionVisionGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    margin-bottom: 5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.visionCard, .missionCard {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.cardTitle {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 0.75rem;
+    color: var(--primary);
+}
+
+.cardText {
+    color: var(--text-gray);
+    font-size: 1rem;
+    line-height: 1.7;
+}
+
+.storySection {
+    margin-bottom: 5rem;
+}
+
+.sectionTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+}
+
+.storyText {
+    color: var(--text-gray);
+    font-size: 1.125rem;
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+}
+
+.milestoneList {
+    list-style: none;
+    padding-left: 0;
+    font-size: 1rem;
+}
+
+.milestoneList li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+    color: var(--text-gray);
+}
+
+.milestoneList li::before {
+    content: "\2022"; 
+    color: #2563eb; 
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+.teamSectionTitle {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-top: 4rem;
+  margin-bottom: 2rem;
+  color: var(--primary);
+  letter-spacing: -0.033em;
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 2rem;
+}
+
+.teamMember {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  text-align: center;
+}
+
+.profileImage {
+  width: 100%;
+  aspect-ratio: 1 / 1; 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  background-color: #f3f4f6;
+  filter: grayscale(100%); 
+  transition: filter 0.4s ease;
+}
+
+.teamMember:hover .profileImage {
+  filter: grayscale(0%) !important;
+  box-shadow: 0 0 0 4px #2563eb;
+}
+
+.memberName {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0;
+  margin-top: 0.5rem;
+}
+
+.memberRole {
+  color: var(--text-gray);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+
+@media (max-width: 768px) {
+    .mainContainer {
+        padding: 2rem 1rem;
+    }
+    .mainTitle {
+        font-size: 3rem;
+    }
+    .missionVisionGrid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+}
