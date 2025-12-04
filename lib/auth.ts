@@ -91,42 +91,18 @@ export const authOptions: NextAuthOptions = {
       return true;
     },
 
-    async jwt({ token, user, trigger, session }) {
-      // Initial sign in - ambil data dari user object
+    async jwt({ token, user }) {
       if (user) {
+        token.role = user.role; // Asumsi di user object ada property role
         token.id = user.id;
-        token.role = user.role || "USER";
-        token.email = user.email || "";
-        // Pastikan name diambil dengan benar (dari credentials atau Google)
-        token.name = user.name || "";
-
-        // Jika user dari Google, ambil nama dari database jika belum ada
-        if (!token.name && user.email) {
-          const dbUser = await prisma.user.findUnique({
-            where: { email: user.email },
-            select: { namaLengkap: true },
-          });
-          if (dbUser) {
-            token.name = dbUser.namaLengkap;
-          }
-        }
       }
-
-      // Update session (e.g., after profile update)
-      if (trigger === "update" && session) {
-        if (session.name) token.name = session.name;
-        if (session.email) token.email = session.email;
-      }
-
       return token;
     },
-
+    // 2. Masukkan role dari Token ke dalam Session (agar bisa dibaca di frontend)
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as string;
-        session.user.email = token.email as string;
-        session.user.name = token.name as string;
+      if (session?.user) {
+        session.user.role = token.role;
+        session.user.id = token.id;
       }
       return session;
     },

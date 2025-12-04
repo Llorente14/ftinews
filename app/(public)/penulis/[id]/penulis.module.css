@@ -1,11 +1,16 @@
+/* penulis.module.css */
+
 .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #f7f7f7;
   color: #141414;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
 }
 
+/* Loading & Error States */
 .loadingContainer,
 .errorContainer {
   display: flex;
@@ -15,6 +20,7 @@
   min-height: 60vh;
   text-align: center;
   gap: 16px;
+  padding: 20px;
 }
 
 .errorContainer h1 {
@@ -46,104 +52,47 @@
   background-color: #333333;
 }
 
-/* Header */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background-color: #f7f7f7;
-}
-
-.headerTop {
-  background-color: #f5f5f5;
-}
-
-.headerTopContent {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 8px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.headerTopLeft {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.logo {
-  font-size: 18px;
-  font-weight: 700;
-  color: #141414;
-  text-decoration: none;
-}
-
-.headerTopRight {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.headerLink {
-  font-size: 14px;
-  font-weight: 500;
-  color: #666666;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.headerLink:hover {
-  color: #141414;
-}
-
-.separator {
-  color: #d1d1d1;
-}
-
-.headerDivider {
-  height: 1px;
-  background-color: #e5e5e5;
-}
-
 /* Main Content */
 .main {
   flex: 1;
-  max-width: 960px;
+  max-width: 1024px; /* Sedikit diperlebar agar grid 3 kolom lebih lega */
   width: 100%;
   margin: 0 auto;
-  padding: 40px 16px;
+  padding: 32px 16px; /* Padding dikurangi sedikit untuk mobile */
+  box-sizing: border-box;
 }
 
 /* Profile Section */
 .profileSection {
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
 
 .profileCard {
   background-color: #ffffff;
   border: 1px solid #e5e5e5;
-  border-radius: 8px;
-  padding: 32px;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .profileHeader {
   display: flex;
+  flex-direction: column; /* Default Mobile: Stack ke bawah */
   gap: 24px;
-  align-items: flex-start;
+  align-items: center; /* Default Mobile: Center alignment */
+  text-align: center; /* Default Mobile: Center text */
 }
 
 .profileAvatar {
-  width: 120px;
-  height: 120px;
+  width: 100px; /* Sedikit lebih kecil di mobile */
+  height: 100px;
   border-radius: 50%;
   background-color: #141414;
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48px;
+  font-size: 40px;
   font-weight: 700;
   flex-shrink: 0;
 }
@@ -154,94 +103,101 @@
 
 .profileInfo {
   flex: 1;
+  width: 100%;
 }
 
 .profileName {
-  font-size: 32px;
+  font-size: 24px; /* Ukuran mobile */
   font-weight: 700;
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
   color: #141414;
 }
 
 .profileRole {
-  font-size: 16px;
-  color: #666666;
-  margin: 0 0 8px 0;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #141414;
+  background-color: #f0f0f0;
+  padding: 4px 12px;
+  border-radius: 100px;
+  margin: 0 0 12px 0;
   text-transform: capitalize;
 }
 
 .profileEmail {
   font-size: 14px;
-  color: #999999;
-  margin: 0 0 24px 0;
+  color: #666;
+  margin: 0 0 20px 0;
 }
 
 .profileStats {
   display: flex;
+  justify-content: center; /* Mobile: Center */
   gap: 32px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 16px;
 }
 
 .statItem {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  align-items: center;
 }
 
 .statNumber {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   color: #141414;
 }
 
 .statLabel {
-  font-size: 14px;
+  font-size: 12px;
   color: #666666;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-weight: 500;
 }
 
 /* Articles Section */
 .articlesSection {
-  margin-top: 48px;
+  margin-top: 40px;
 }
 
 .sectionHeader {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .sectionTitle {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;
   color: #141414;
 }
 
 .sectionSubtitle {
-  font-size: 16px;
+  font-size: 14px;
   color: #666666;
   margin: 0;
 }
 
 .emptyState {
   text-align: center;
-  padding: 64px 16px;
+  padding: 48px 16px;
   background-color: #ffffff;
   border: 1px solid #e5e5e5;
   border-radius: 8px;
 }
 
-.emptyState p {
-  font-size: 16px;
-  color: #666666;
-  margin: 0;
-}
-
+/* Grid Layout */
 .articlesGrid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 24px;
+  grid-template-columns: 1fr; /* Mobile: 1 Kolom */
+  gap: 20px;
 }
 
+/* Article Card */
 .articleCard {
   background-color: #ffffff;
   border: 1px solid #e5e5e5;
@@ -249,19 +205,21 @@
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
+  height: 100%; /* Agar tinggi card seragam */
 }
 
 .articleCard:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  border-color: #d4d4d4;
 }
 
 .articleImage {
   width: 100%;
-  height: 200px;
+  aspect-ratio: 16 / 9; /* Menggunakan aspect-ratio modern */
   position: relative;
   overflow: hidden;
   background-color: #f5f5f5;
@@ -271,29 +229,35 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.articleCard:hover .articleImage img {
+  transform: scale(1.05);
 }
 
 .articleContent {
   padding: 20px;
   display: flex;
   flex-direction: column;
+  flex: 1; /* Mengisi sisa ruang agar footer card rata bawah */
   gap: 12px;
 }
 
 .articleCategory {
-  font-size: 12px;
-  font-weight: 600;
-  color: #666666;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2563eb; /* Warna aksen biru agar lebih menarik */
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .articleTitle {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   margin: 0;
   color: #141414;
-  line-height: 1.3;
+  line-height: 1.4;
 }
 
 .articleDescription {
@@ -305,28 +269,86 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  flex: 1; /* Mendorong tanggal ke bawah */
 }
 
 .articleDate {
   font-size: 12px;
   color: #999999;
-  margin: 0;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f5f5f5;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-/* Responsive */
+/* =========================================
+   RESPONSIVE BREAKPOINTS (Media Queries)
+   ========================================= */
+
+/* Tablet & Up (min-width: 768px) */
 @media (min-width: 768px) {
+  .main {
+    padding: 40px 24px;
+  }
+
+  /* Ubah layout Profile Card menjadi Horizontal */
+  .profileCard {
+    padding: 32px;
+  }
+
+  .profileHeader {
+    flex-direction: row; /* Kembali ke samping */
+    align-items: flex-start;
+    text-align: left;
+    gap: 32px;
+  }
+
+  .profileAvatar {
+    width: 120px;
+    height: 120px;
+    font-size: 48px;
+  }
+
+  .profileName {
+    font-size: 32px;
+  }
+
+  .profileRole {
+    margin-bottom: 8px;
+  }
+
+  .profileStats {
+    justify-content: flex-start; /* Rata kiri */
+    border-top: none; /* Hapus garis pemisah mobile */
+    padding-top: 8px;
+  }
+
+  .statItem {
+    align-items: flex-start; /* Rata kiri */
+  }
+
+  .statNumber {
+    font-size: 24px;
+  }
+
+  /* Grid 2 Kolom */
   .articlesGrid {
     grid-template-columns: repeat(2, 1fr);
-  }
-
-  .articleImage {
-    height: 250px;
+    gap: 24px;
   }
 }
 
+/* Desktop & Up (min-width: 1024px) */
 @media (min-width: 1024px) {
+  /* Grid 3 Kolom */
   .articlesGrid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
+
+  .articleTitle {
+    font-size: 20px;
   }
 }
-

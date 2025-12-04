@@ -21,6 +21,7 @@ import SponsoredCard from "@/components/home/SponsoredCard";
 import styles from "./homepage.module.css";
 
 export default function HomePage() {
+  const router = useRouter();
   const { data: session } = useSession();
   const pathname = usePathname();
   const { articles, fetchArticles, isLoading } = useArticles({
@@ -145,6 +146,7 @@ export default function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab]);
 
+  console.log("Session User:", session?.user);
   // Get featured article (first article)
   const featuredArticle = articles[0];
 
@@ -283,9 +285,10 @@ export default function HomePage() {
           <section className={styles.featuredSection}>
             <h2 className={styles.sectionTitle}>Featured News</h2>
             <div className={styles.featuredGrid}>
-              <Link
-                href={`/artikel/${featuredArticle.slug}`}
+              <div
                 className={styles.featuredMain}
+                onClick={() => router.push(`/artikel/${featuredArticle.slug}`)}
+                style={{ cursor: "pointer" }} // Tambahkan cursor pointer agar terlihat bisa diklik
               >
                 <div
                   className={styles.featuredImage}
@@ -329,7 +332,7 @@ export default function HomePage() {
                     {featuredArticle.description}
                   </p>
                 </div>
-              </Link>
+              </div>
 
               <div className={styles.hoaxBox}>
                 <h3 className={styles.hoaxTitle}>Eradicating Hoaxes</h3>

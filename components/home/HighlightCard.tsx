@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from "@/app/(public)/homepage.module.css";
+import { useRouter } from "next/navigation";
 
 export type HighlightCardArticle = {
   id: string;
@@ -31,8 +32,17 @@ export default function HighlightCard({
   onToggleBookmark,
   disabled,
 }: HighlightCardProps) {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/artikel/${article.slug}`);
+  };
   return (
-    <Link href={`/artikel/${article.slug}`} className={styles.highlightCard}>
+    <div
+      className={styles.highlightCard}
+      onClick={handleCardClick}
+      style={{ cursor: "pointer" }}
+    >
       <div className={styles.highlightCardImageWrapper}>
         <Image
           src={article.imageUrl || "/placeholder.jpg"}
@@ -86,6 +96,6 @@ export default function HighlightCard({
         </div>
         <p className={styles.highlightCardDescription}>{article.description}</p>
       </div>
-    </Link>
+    </div>
   );
 }

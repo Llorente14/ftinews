@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import styles from "@/app/(public)/homepage.module.css";
 
 export type SponsoredCardArticle = {
@@ -30,8 +31,17 @@ export default function SponsoredCard({
   onToggleBookmark,
   disabled,
 }: SponsoredCardProps) {
+  const router = useRouter();
+
+  const handleCardClick = () => {
+    router.push(`/artikel/${article.slug}`);
+  };
   return (
-    <Link href={`/artikel/${article.slug}`} className={styles.sponsoredCard}>
+    <div
+      className={styles.sponsoredCard}
+      onClick={handleCardClick}
+      style={{ cursor: "pointer" }}
+    >
       <div className={styles.sponsoredCardImageWrapper}>
         <Image
           src={article.imageUrl || "/placeholder.jpg"}
@@ -95,6 +105,6 @@ export default function SponsoredCard({
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }

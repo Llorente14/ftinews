@@ -19,15 +19,84 @@ import {
 } from "@/hooks/useAdmin";
 import styles from "./admin.module.css";
 
+// --- 1. KOMPONEN MODAL KONFIRMASI (Reusable) ---
+interface ConfirmationModalProps {
+  isOpen: boolean;
+  isDeleting: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: string;
+}
+
+const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+  isOpen,
+  isDeleting,
+  onClose,
+  onConfirm,
+  title,
+  message,
+}) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className={styles.modalOverlay}>
+      {" "}
+      {/* Menggunakan class overlay yg sudah ada */}
+      <div
+        className={styles.modal}
+        style={{ maxWidth: "400px", textAlign: "center" }}
+      >
+        <div style={{ marginBottom: "1rem" }}>
+          <i
+            className="bx bx-trash"
+            style={{ fontSize: "3rem", color: "#ef4444" }}
+          ></i>
+        </div>
+        <h3 className={styles.modalTitle} style={{ justifyContent: "center" }}>
+          {title}
+        </h3>
+        <p style={{ color: "#666", marginBottom: "2rem" }}>{message}</p>
+
+        <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+          <button
+            onClick={onClose}
+            className={styles.formCancel}
+            disabled={isDeleting}
+            style={{ flex: 1 }}
+          >
+            Batal
+          </button>
+          <button
+            onClick={onConfirm}
+            className={styles.buttonDelete} // Menggunakan style button delete yg ada
+            disabled={isDeleting}
+            style={{ flex: 1, justifyContent: "center" }}
+          >
+            {isDeleting ? "Menghapus..." : "Ya, Hapus"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// --- 2. HALAMAN UTAMA ADMIN ---
 export default function AdminPanelPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<"articles" | "users">("articles");
+
+  // State Modal Form
   const [showArticleModal, setShowArticleModal] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
   const [editingArticle, setEditingArticle] = useState<string | null>(null);
 
-  // Articles
+  // State Modal Konfirmasi Delete
+  const [articleToDelete, setArticleToDelete] = useState<string | null>(null);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
+
+  // Articles Hooks
   const {
     articles,
     fetchArticles,
@@ -38,13 +107,13 @@ export default function AdminPanelPage() {
   const { updateArticle, isLoading: updating } = useUpdateArticle();
   const { deleteArticle, isLoading: deleting } = useDeleteArticle();
 
-  // Users (Admin only)
+  // Users Hooks (Admin only)
   const { users, fetchUsers, isLoading: usersLoading } = useAdminUsers();
   const { createUser, isLoading: creatingUser } = useCreateUser();
   const { updateUser, isLoading: updatingUser } = useUpdateUser();
   const { deleteUser, isLoading: deletingUser } = useDeleteUser();
 
-  // Article Form
+  // Article Form State
   const [articleForm, setArticleForm] = useState({
     title: "",
     description: "",
@@ -55,7 +124,7 @@ export default function AdminPanelPage() {
     publishedAt: "",
   });
 
-  // User Form
+  // User Form State
   const [userForm, setUserForm] = useState({
     namaLengkap: "",
     email: "",
@@ -80,6 +149,8 @@ export default function AdminPanelPage() {
       }
     }
   }, [status, session, router, fetchArticles, fetchUsers]);
+
+  // --- HANDLERS ARTIKEL ---
 
   const handleCreateArticle = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -159,15 +230,24 @@ export default function AdminPanelPage() {
     }
   };
 
-  const handleDeleteArticle = async (id: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus artikel ini?")) return;
+  // 1. Trigger Modal Hapus Artikel
+  const handleDeleteArticleClick = (id: string) => {
+    setArticleToDelete(id); // Set ID yang mau dihapus, ini akan membuka modal
+  };
+
+  // 2. Eksekusi Hapus Artikel (Dipanggil Modal)
+  const confirmDeleteArticle = async () => {
+    if (!articleToDelete) return;
     try {
-      await deleteArticle(id);
+      await deleteArticle(articleToDelete);
       fetchArticles();
+      setArticleToDelete(null); // Tutup modal
     } catch (err) {
       // Error handled in hook
     }
   };
+
+  // --- HANDLERS USER ---
 
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,11 +279,18 @@ export default function AdminPanelPage() {
     }
   };
 
-  const handleDeleteUser = async (userId: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus user ini?")) return;
+  // 1. Trigger Modal Hapus User
+  const handleDeleteUserClick = (userId: string) => {
+    setUserToDelete(userId); // Set ID user, buka modal
+  };
+
+  // 2. Eksekusi Hapus User (Dipanggil Modal)
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
     try {
-      await deleteUser(userId);
+      await deleteUser(userToDelete);
       fetchUsers();
+      setUserToDelete(null); // Tutup modal
     } catch (err) {
       // Error handled in hook
     }
@@ -246,6 +333,28 @@ export default function AdminPanelPage() {
           </Link>
         </div>
       </header>
+
+      {/* --- CONFIRMATION MODALS --- */}
+
+      {/* Modal Hapus Artikel */}
+      <ConfirmationModal
+        isOpen={!!articleToDelete}
+        isDeleting={deleting}
+        onClose={() => setArticleToDelete(null)}
+        onConfirm={confirmDeleteArticle}
+        title="Hapus Artikel?"
+        message="Apakah Anda yakin ingin menghapus artikel ini? Tindakan ini tidak dapat dibatalkan."
+      />
+
+      {/* Modal Hapus User */}
+      <ConfirmationModal
+        isOpen={!!userToDelete}
+        isDeleting={deletingUser}
+        onClose={() => setUserToDelete(null)}
+        onConfirm={confirmDeleteUser}
+        title="Hapus User?"
+        message="Apakah Anda yakin ingin menghapus user ini? Semua data terkait user akan hilang."
+      />
 
       <div className={styles.main}>
         {/* Tabs */}
@@ -312,19 +421,40 @@ export default function AdminPanelPage() {
                     <div key={art.id} className={styles.articleCard}>
                       <div className={styles.articleHeader}>
                         <div className={styles.articleContent}>
+                          {art.imageUrl && (
+                            <img
+                              src={art.imageUrl}
+                              alt={art.title}
+                              className={styles.articleThumbnail}
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.display =
+                                  "none";
+                              }}
+                            />
+                          )}
+
                           <h3 className={styles.articleTitle}>{art.title}</h3>
                           <p className={styles.articleDescription}>
                             {art.description}
                           </p>
                           <div className={styles.articleMeta}>
-                            <span>Kategori: {art.category || "-"}</span>
+                            <span>{art.category || "Uncategorized"}</span>
                             <span>
-                              Penulis: {art.author?.namaLengkap || "-"}
+                              Oleh: {art.author?.namaLengkap || "Unknown"}
                             </span>
-                            <span>Komentar: {art._count.comments}</span>
-                            <span>Bookmark: {art._count.bookmarks}</span>
+                            <span>💬 {art._count.comments}</span>
+                            <span>🔖 {art._count.bookmarks}</span>
+                            <span>
+                              📅{" "}
+                              {art.publishedAt
+                                ? new Date(art.publishedAt).toLocaleDateString(
+                                    "id-ID"
+                                  )
+                                : "Draft"}
+                            </span>
                           </div>
                         </div>
+
                         <div className={styles.articleActions}>
                           <button
                             onClick={() => handleEditArticle(art.id)}
@@ -333,7 +463,7 @@ export default function AdminPanelPage() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleDeleteArticle(art.id)}
+                            onClick={() => handleDeleteArticleClick(art.id)} // Menggunakan Handler baru
                             disabled={deleting}
                             className={`${styles.button} ${styles.buttonDelete}`}
                           >
@@ -408,7 +538,7 @@ export default function AdminPanelPage() {
                             <option value="ADMIN">ADMIN</option>
                           </select>
                           <button
-                            onClick={() => handleDeleteUser(user.id)}
+                            onClick={() => handleDeleteUserClick(user.id)} // Menggunakan Handler baru
                             disabled={
                               deletingUser || user.id === session?.user?.id
                             }
@@ -426,7 +556,7 @@ export default function AdminPanelPage() {
           </div>
         )}
 
-        {/* Create/Edit Article Modal */}
+        {/* Create/Edit Article Modal (TETAP SAMA) */}
         {showArticleModal && (
           <div className={styles.modalOverlay}>
             <div className={styles.modal}>
@@ -604,7 +734,7 @@ export default function AdminPanelPage() {
           </div>
         )}
 
-        {/* Create User Modal (Admin Only) */}
+        {/* Create User Modal (TETAP SAMA) */}
         {showUserModal && session?.user?.role === "ADMIN" && (
           <div className={styles.modalOverlay}>
             <div className={`${styles.modal} ${styles.modalSmall}`}>

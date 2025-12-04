@@ -125,24 +125,36 @@ export function useLogout() {
 export function useForgotPassword() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); // ✅ State baru ditambahkan
   const router = useRouter();
 
   const sendResetLink = async (email: string) => {
     setIsLoading(true);
     setError(null);
+    setSuccessMessage(null); // Reset pesan sukses sebelum request baru
+
     try {
       const res = await fetch("/api/auth/lupa-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-      const result: ApiResponse<unknown> = await res.json();
+
+      const result = await res.json();
+
       if (!res.ok || result.status === "error") {
         throw new Error(result.message || "Gagal mengirim kode reset");
       }
 
-      // DIUBAH: Hapus '/auth' dari path
+      // ✅ Set pesan sukses dari response API atau default
+      setSuccessMessage(
+        result.message || "Link reset password berhasil dikirim ke email Anda."
+      );
+
+      // Opsional: Beri jeda sedikit agar user bisa baca pesan sukses sebelum redirect
+      // atau biarkan langsung redirect seperti sebelumnya:
       router.push(`/verify-token?email=${encodeURIComponent(email)}`);
+
       return result;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Terjadi kesalahan";
@@ -152,7 +164,9 @@ export function useForgotPassword() {
       setIsLoading(false);
     }
   };
-  return { sendResetLink, isLoading, error };
+
+  // ✅ Return successMessage agar bisa diambil saat destructuring
+  return { sendResetLink, isLoading, error, successMessage };
 }
 
 // ============================================
