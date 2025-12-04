@@ -13,6 +13,8 @@ import {
     Stack,
 } from "react-bootstrap";
 
+import Footer from "@/components/layout/Footer";
+import PublicHeader from "@/components/layout/PublicHeader";
 import { useArticles } from "../../../hooks/useArticles";
 
 // Impor CSS kustom
@@ -189,6 +191,8 @@ function SearchPage() {
     };
 
     return (
+        <>
+        <PublicHeader />
         <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh', paddingBottom: '3rem' }}>
             <Container className="pt-5">
                 <Row className="justify-content-center">
@@ -274,6 +278,8 @@ function SearchPage() {
                 </Row>
             </Container>
         </div>
+        <Footer />
+        </>
     );
 }
 
