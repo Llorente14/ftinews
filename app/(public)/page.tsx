@@ -295,8 +295,9 @@ export default function HomePage() {
                 <div
                   className={styles.featuredImage}
                   style={{
-                    backgroundImage: `url(${featuredArticle.imageUrl || "/placeholder.jpg"
-                      })`,
+                    backgroundImage: `url(${
+                      featuredArticle.imageUrl || "/placeholder.jpg"
+                    })`,
                   }}
                 ></div>
                 <div className={styles.featuredOverlay}></div>
@@ -371,32 +372,36 @@ export default function HomePage() {
         <section className={styles.latestSection}>
           <div className={styles.tabsHeader}>
             <div
-              className={`${styles.tab} ${activeTab === "latest" ? styles.tabActive : ""
-                }`}
+              className={`${styles.tab} ${
+                activeTab === "latest" ? styles.tabActive : ""
+              }`}
               onClick={() => setActiveTab("latest")}
             >
               <h3 className={styles.tabTitle}>Latest</h3>
               <span className={styles.tabLink}>View All →</span>
             </div>
             <div
-              className={`${styles.tab} ${activeTab === "press" ? styles.tabActive : ""
-                }`}
+              className={`${styles.tab} ${
+                activeTab === "press" ? styles.tabActive : ""
+              }`}
               onClick={() => setActiveTab("press")}
             >
               <h3 className={styles.tabTitle}>Popular</h3>
               <span className={styles.tabLink}>View All →</span>
             </div>
             <div
-              className={`${styles.tab} ${activeTab === "news" ? styles.tabActive : ""
-                }`}
+              className={`${styles.tab} ${
+                activeTab === "news" ? styles.tabActive : ""
+              }`}
               onClick={() => setActiveTab("news")}
             >
               <h3 className={styles.tabTitle}>News</h3>
               <span className={styles.tabLink}>View All →</span>
             </div>
             <div
-              className={`${styles.tab} ${activeTab === "announcement" ? styles.tabActive : ""
-                }`}
+              className={`${styles.tab} ${
+                activeTab === "announcement" ? styles.tabActive : ""
+              }`}
               onClick={() => setActiveTab("announcement")}
             >
               <h3 className={styles.tabTitle}>Announcement</h3>
@@ -476,8 +481,9 @@ export default function HomePage() {
                     <div
                       className={styles.latestCardImage}
                       style={{
-                        backgroundImage: `url(${article.imageUrl || "/placeholder.jpg"
-                          })`,
+                        backgroundImage: `url(${
+                          article.imageUrl || "/placeholder.jpg"
+                        })`,
                       }}
                     ></div>
                     <div className={styles.latestCardContent}>
