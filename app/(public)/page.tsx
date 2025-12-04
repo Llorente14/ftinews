@@ -12,14 +12,16 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
+import HomeHeader from "@/components/home/HomeHeader";
 import Footer from "@/components/layout/Footer";
+import HighlightCard from "@/components/home/HighlightCard";
+import SponsoredCard from "@/components/home/SponsoredCard";
 import styles from "./homepage.module.css";
 
 export default function HomePage() {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { articles, fetchArticles, isLoading } = useArticles({
     perPage: 10,
     sort: "newest",
@@ -83,8 +85,6 @@ export default function HomePage() {
   const { deleteBookmark, isLoading: isDeletingBookmark } = useDeleteBookmark();
 
   const [activeTab, setActiveTab] = useState("latest");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [email, setEmail] = useState("");
   const {
     subscribe,
@@ -229,191 +229,12 @@ export default function HomePage() {
   return (
     <div className={styles.container}>
       {/* Header */}
-      <header className={styles.header}>
-        <div className={styles.headerTop}>
-          <div className={styles.headerTopContent}>
-            <div className={styles.headerTopLeft}>
-              <Link href="/" className={styles.logoLink}>
-                <h1 className={styles.logo}>FTI News</h1>
-              </Link>
-              <span className={styles.date}>{currentDate}</span>
-            </div>
-            <div className={styles.headerTopRight}>
-              <Link
-                href={session ? "/profile" : "/login"}
-                className={styles.headerLink}
-              >
-                {session?.user?.name || "Login"}
-              </Link>
-              <Link href="/cari" className={styles.searchBox}>
-                <span className={styles.searchIcon}>
-                  <i className="bx bx-search"></i>
-                </span>
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  readOnly
-                  className={styles.searchInput}
-                />
-              </Link>
-              <button
-                className={styles.mobileMenuButton}
-                onClick={() => {
-                  setIsMobileMenuOpen(!isMobileMenuOpen);
-                  if (isMobileMenuOpen) {
-                    setIsCategoryDropdownOpen(false);
-                  }
-                }}
-                aria-label="Toggle menu"
-              >
-                <i
-                  className={`bx ${isMobileMenuOpen ? "bx-x" : "bx-menu"}`}
-                ></i>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <nav
-          className={`${styles.nav} ${isMobileMenuOpen ? styles.navOpen : ""}`}
-        >
-          <div className={styles.navContent}>
-            <div className={styles.navLinks}>
-              <Link
-                href="/"
-                className={`${styles.navLink} ${
-                  pathname === "/" ? styles.navLinkActive : ""
-                }`}
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setIsCategoryDropdownOpen(false);
-                }}
-              >
-                Home
-                {pathname === "/" && (
-                  <span className={styles.navLinkSlider}></span>
-                )}
-              </Link>
-              {/* Desktop: Show categories horizontally */}
-              {categories.length > 0 && (
-                <div className={styles.categoryLinks}>
-                  {categories.map((category) => {
-                    const isActive =
-                      pathname === "/artikel" &&
-                      searchParams.get("category") === category.name;
-                    return (
-                      <Link
-                        key={category.name}
-                        href={`/artikel?category=${encodeURIComponent(
-                          category.name
-                        )}`}
-                        className={`${styles.categoryLink} ${
-                          isActive ? styles.categoryLinkActive : ""
-                        }`}
-                        onClick={() => {
-                          setIsMobileMenuOpen(false);
-                          setIsCategoryDropdownOpen(false);
-                        }}
-                      >
-                        {category.name}
-                        {isActive && (
-                          <span className={styles.categoryLinkSlider}></span>
-                        )}
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-              {/* Mobile: Show dropdown */}
-              {categories.length > 0 && (
-                <div className={styles.categoryDropdown}>
-                  <button
-                    className={styles.categoryDropdownButton}
-                    onClick={() =>
-                      setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
-                    }
-                    aria-label="Toggle categories"
-                  >
-                    <span>Kategori</span>
-                    <i
-                      className={`bx bx-chevron-down ${
-                        isCategoryDropdownOpen ? styles.chevronOpen : ""
-                      }`}
-                    ></i>
-                  </button>
-                  {isCategoryDropdownOpen && (
-                    <div className={styles.categoryDropdownContent}>
-                      {categories.map((category) => (
-                        <Link
-                          key={category.name}
-                          href={`/artikel?category=${encodeURIComponent(
-                            category.name
-                          )}`}
-                          className={styles.categoryDropdownItem}
-                          onClick={() => {
-                            setIsCategoryDropdownOpen(false);
-                            setIsMobileMenuOpen(false);
-                          }}
-                        >
-                          {category.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-              {session && (
-                <Link
-                  href="/profile"
-                  className={`${styles.navLink} ${
-                    pathname === "/profile" ? styles.navLinkActive : ""
-                  }`}
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    setIsCategoryDropdownOpen(false);
-                  }}
-                >
-                  Profile
-                  {pathname === "/profile" && (
-                    <span className={styles.navLinkSlider}></span>
-                  )}
-                </Link>
-              )}
-              <Link
-                href="/kontak"
-                className={`${styles.navLink} ${
-                  pathname === "/kontak" ? styles.navLinkActive : ""
-                }`}
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setIsCategoryDropdownOpen(false);
-                }}
-              >
-                Kontak
-                {pathname === "/kontak" && (
-                  <span className={styles.navLinkSlider}></span>
-                )}
-              </Link>
-              <Link
-                href="/tentang-kami"
-                className={`${styles.navLink} ${
-                  pathname === "/tentang-kami" ? styles.navLinkActive : ""
-                }`}
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  setIsCategoryDropdownOpen(false);
-                }}
-              >
-                Tentang Kami
-                {pathname === "/tentang-kami" && (
-                  <span className={styles.navLinkSlider}></span>
-                )}
-              </Link>
-            </div>
-          </div>
-        </nav>
-        <div className={styles.navDivider}></div>
-      </header>
+      <HomeHeader
+        session={session ?? null}
+        categories={categories}
+        currentPath={pathname}
+        currentDate={currentDate}
+      />
 
       <main className={styles.main}>
         {/* Breaking News */}
@@ -707,82 +528,13 @@ export default function HomePage() {
                   {popularArticles.map((article) => {
                     const isBookmarked = isArticleBookmarked(article.id);
                     return (
-                      <Link
+                      <HighlightCard
                         key={article.id}
-                        href={`/artikel/${article.slug}`}
-                        className={styles.highlightCard}
-                      >
-                        <div className={styles.highlightCardImageWrapper}>
-                          <Image
-                            src={article.imageUrl || "/placeholder.jpg"}
-                            alt={article.title}
-                            fill
-                            className={styles.highlightCardImage}
-                            style={{ objectFit: "cover" }}
-                            unoptimized
-                          />
-                          <span className={styles.highlightCardCategory}>
-                            {article.category?.toUpperCase() || "NEWS"}
-                          </span>
-                        </div>
-                        <div className={styles.highlightCardContent}>
-                          <h3 className={styles.highlightCardTitle}>
-                            {article.title}
-                          </h3>
-                          <div className={styles.highlightCardMeta}>
-                            <span className={styles.highlightCardAuthor}>
-                              By{" "}
-                              {article.author ? (
-                                <Link
-                                  href={`/penulis/${article.author.id}`}
-                                  className={styles.highlightCardAuthorLink}
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  {article.author.namaLengkap}
-                                </Link>
-                              ) : (
-                                "Admin"
-                              )}
-                            </span>
-                            <span className={styles.highlightCardDot}>•</span>
-                            <span className={styles.highlightCardDate}>
-                              {new Date(article.publishedAt).toLocaleDateString(
-                                "en-GB",
-                                {
-                                  day: "numeric",
-                                  month: "short",
-                                  year: "numeric",
-                                }
-                              )}
-                            </span>
-                            <button
-                              className={`${styles.bookmarkButton} ${
-                                styles.bookmarkButtonHighlight
-                              } ${
-                                isBookmarked ? styles.bookmarkButtonActive : ""
-                              }`}
-                              onClick={(e) =>
-                                handleBookmarkToggle(e, article.id)
-                              }
-                              aria-label={
-                                isBookmarked
-                                  ? "Hapus bookmark"
-                                  : "Tambah bookmark"
-                              }
-                              disabled={isAddingBookmark || isDeletingBookmark}
-                            >
-                              <i
-                                className={`bx ${
-                                  isBookmarked ? "bxs-bookmark" : "bx-bookmark"
-                                }`}
-                              ></i>
-                            </button>
-                          </div>
-                          <p className={styles.highlightCardDescription}>
-                            {article.description}
-                          </p>
-                        </div>
-                      </Link>
+                        article={article}
+                        isBookmarked={isBookmarked}
+                        onToggleBookmark={handleBookmarkToggle}
+                        disabled={isAddingBookmark || isDeletingBookmark}
+                      />
                     );
                   })}
                 </div>
@@ -810,7 +562,7 @@ export default function HomePage() {
                     {categories.map((category) => (
                       <li key={category.name} className={styles.topicItem}>
                         <Link
-                          href={`/artikel?category=${encodeURIComponent(
+                          href={`/kategori/${encodeURIComponent(
                             category.name
                           )}`}
                           className={styles.topicLink}
@@ -895,83 +647,13 @@ export default function HomePage() {
             {sponsoredArticles.map((article) => {
               const isBookmarked = isArticleBookmarked(article.id);
               return (
-                <Link
+                <SponsoredCard
                   key={article.id}
-                  href={`/artikel/${article.slug}`}
-                  className={styles.sponsoredCard}
-                >
-                  <div className={styles.sponsoredCardImageWrapper}>
-                    <Image
-                      src={article.imageUrl || "/placeholder.jpg"}
-                      alt={article.title}
-                      fill
-                      className={styles.sponsoredCardImage}
-                      style={{ objectFit: "cover" }}
-                      unoptimized
-                    />
-                    <span className={styles.sponsoredCardCategory}>
-                      {article.category?.toUpperCase() || "NEWS"}
-                    </span>
-                  </div>
-                  <div className={styles.sponsoredCardContent}>
-                    <h4 className={styles.sponsoredCardTitle}>
-                      {article.title}
-                    </h4>
-                    <div className={styles.sponsoredCardMeta}>
-                      <div className={styles.sponsoredCardAuthor}>
-                        <Link
-                          href={`/profile/${article?.author?.id}`}
-                          className={styles.sponsoredCardAvatar}
-                        >
-                          {article.author?.namaLengkap?.[0]?.toUpperCase() ||
-                            "A"}
-                        </Link>
-                        <div className={styles.sponsoredCardAuthorInfo}>
-                          <span className={styles.sponsoredCardAuthorName}>
-                            By{" "}
-                            {article.author ? (
-                              <Link
-                                href={`/penulis/${article.author.id}`}
-                                className={styles.sponsoredCardAuthorName}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                {article.author.namaLengkap}
-                              </Link>
-                            ) : (
-                              "Anonim"
-                            )}
-                          </span>
-                          <span className={styles.sponsoredCardDate}>
-                            {new Date(article.publishedAt).toLocaleDateString(
-                              "en-GB",
-                              {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                              }
-                            )}
-                          </span>
-                        </div>
-                        <button
-                          className={`${styles.bookmarkButton} ${
-                            styles.bookmarkButtonSponsored
-                          } ${isBookmarked ? styles.bookmarkButtonActive : ""}`}
-                          onClick={(e) => handleBookmarkToggle(e, article.id)}
-                          aria-label={
-                            isBookmarked ? "Hapus bookmark" : "Tambah bookmark"
-                          }
-                          disabled={isAddingBookmark || isDeletingBookmark}
-                        >
-                          <i
-                            className={`bx ${
-                              isBookmarked ? "bxs-bookmark" : "bx-bookmark"
-                            }`}
-                          ></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+                  article={article}
+                  isBookmarked={isBookmarked}
+                  onToggleBookmark={handleBookmarkToggle}
+                  disabled={isAddingBookmark || isDeletingBookmark}
+                />
               );
             })}
           </div>
